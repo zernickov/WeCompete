@@ -27,8 +27,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent intToMain = new Intent(HomeActivity.this, MainActivity.class);
-                startActivity(intToMain);
+                Intent intToSignIn = new Intent(HomeActivity.this, LoginActivity.class);
+                startActivity(intToSignIn);
             }
         });
     }
