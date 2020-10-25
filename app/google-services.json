@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1077116932647",
+    "firebase_url": "https://wecompete-1299c.firebaseio.com",
+    "project_id": "wecompete-1299c",
+    "storage_bucket": "wecompete-1299c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077116932647:android:0548da0e844a080224b402",
+        "android_client_info": {
+          "package_name": "com.example.wecompete"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1077116932647-mtdirn6ms3iflkvr4c1rk64u9d4ekmoo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4IzeRLutZa6ZZF52ZQLrhYouMn9LmePs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1077116932647-mtdirn6ms3iflkvr4c1rk64u9d4ekmoo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
