@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
         myUsernameTextView = findViewById(R.id.myUsernameTextView);
         btnLogout = findViewById(R.id.logoutButton);
 
-        userRepo.showUsername(myUsernameTextView);
+        userRepo.showUsername(myUsernameTextView, mFirebaseAuth.getUid());
 
 
         btnLogout.setOnClickListener(new View.OnClickListener() {

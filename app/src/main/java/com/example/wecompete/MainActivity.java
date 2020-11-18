@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.wecompete.model.User;
+import com.example.wecompete.repo.UserRepo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -18,10 +20,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
-    public EditText emailId, password;
+    public EditText emailId, password, username;
     public Button btnSignUp;
     public TextView tvSignIn;
     public FirebaseAuth mFirebaseAuth;
+    private UserRepo userRepo = new UserRepo();
 
 
     @Override
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+        username = findViewById(R.id.editTextTextUsername);
         emailId = findViewById(R.id.editTextTextEmailAddress);
         password = findViewById(R.id.editTextTextPassword);
         btnSignUp = findViewById(R.id.signUpButton);
@@ -39,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = emailId.getText().toString();
                 String pwd = password.getText().toString();
+                String userName = username.getText().toString();
                 if (email.isEmpty()) {
                     emailId.setError("Please enter email");
                     emailId.requestFocus();
@@ -47,11 +52,15 @@ public class MainActivity extends AppCompatActivity {
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
-                else if (email.isEmpty() && pwd.isEmpty()) {
+                else if (userName.isEmpty()) {
+                    username.setError("Please enter your username");
+                    username.requestFocus();
+                }
+                else if (email.isEmpty() && pwd.isEmpty() && userName.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Fields are empty!", Toast.LENGTH_SHORT).show();
 
                 }
-                else if (!(email.isEmpty() && pwd.isEmpty())) {
+                else if (!(email.isEmpty() && pwd.isEmpty() && userName.isEmpty())) {
                     mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -60,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                             else {
                                 //todo evt. ret efter video
+                                User user = new User(userName, mFirebaseAuth.getUid());
+                                userRepo.addUsername(user);
                                 Intent successful = new Intent(MainActivity.this, HomeActivity.class);
                                 startActivity(successful);
                             }
