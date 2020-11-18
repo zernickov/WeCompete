@@ -26,7 +26,7 @@ public class UserRepo {
 
     public void addUsername(User user) {
         DocumentReference ref = db.collection(USERS).document(user.getId()); //opret nyt dokument i Firebase hvor vi selv angiver document id
-        System.out.println("addNote kaldet " + ref);
+        System.out.println("addUsername kaldet " + ref);
         Map<String, String> map = new HashMap<>();
         map.put(USERNAME, user.getUsername()); //tilføj selv flere key-value par efter behov
         ref.set(map).addOnCompleteListener(task -> {

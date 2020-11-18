@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.wecompete.model.Group;
+import com.example.wecompete.repo.GroupRepo;
 import com.example.wecompete.repo.UserRepo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,10 +24,12 @@ import java.util.Arrays;
 public class HomeActivity extends AppCompatActivity {
 
     public Button btnLogout;
+    public Button btnNewGroup;
     public FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private TextView myUsernameTextView;
     private UserRepo userRepo = new UserRepo();
+    private GroupRepo groupRepo = new GroupRepo();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
@@ -37,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         myUsernameTextView = findViewById(R.id.myUsernameTextView);
         btnLogout = findViewById(R.id.logoutButton);
+        btnNewGroup = findViewById(R.id.newGroupBtn);
 
         userRepo.showUsername(myUsernameTextView, mFirebaseAuth.getUid());
 
@@ -47,6 +52,14 @@ public class HomeActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 Intent intToSignIn = new Intent(HomeActivity.this, LoginActivity.class);
                 startActivity(intToSignIn);
+            }
+        });
+
+        btnNewGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Group group = new Group("hardcordedgroupname");
+                groupRepo.addGroup(group, mFirebaseAuth.getUid());
             }
         });
     }
