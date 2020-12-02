@@ -58,8 +58,8 @@ public class HomeActivity extends AppCompatActivity {
         btnNewGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Group group = new Group("hardcordedgroupname");
-                groupRepo.addGroup(group, mFirebaseAuth.getUid());
+                Intent createGrpPage = new Intent(HomeActivity.this, CreateGroupActivity.class);
+                startActivity(createGrpPage);
             }
         });
     }
