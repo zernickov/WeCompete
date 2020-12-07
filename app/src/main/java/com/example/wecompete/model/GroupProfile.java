@@ -1,13 +1,11 @@
 package com.example.wecompete.model;
 
-import java.util.UUID;
-
 public class GroupProfile {
 
     private String id; //default
-    private int ELO;
+    private String ELO;
 
-    public GroupProfile(int ELO, String id) {
+    public GroupProfile(String ELO, String id) {
         this.ELO = ELO;
         this.id = id;
     }
@@ -24,11 +22,11 @@ public class GroupProfile {
         this.id = id;
     }
 
-    public int getELO() {
+    public String getELO() {
         return ELO;
     }
 
-    public void setELO(int ELO) {
+    public void setELO(String ELO) {
         this.ELO = ELO;
     }
 }

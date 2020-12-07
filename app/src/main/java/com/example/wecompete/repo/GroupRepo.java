@@ -3,6 +3,7 @@ package com.example.wecompete.repo;
 import androidx.annotation.NonNull;
 
 import com.example.wecompete.model.Group;
+import com.example.wecompete.model.GroupProfile;
 import com.example.wecompete.model.User;
 import com.example.wecompete.model.UserProfile;
 import com.example.wecompete.service.Updatable;
