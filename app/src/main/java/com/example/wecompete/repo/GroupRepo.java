@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.example.wecompete.model.Group;
 import com.example.wecompete.model.User;
+import com.example.wecompete.model.UserProfile;
+import com.example.wecompete.service.Updatable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -13,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +32,14 @@ public class GroupRepo {
     private User user = new User();
     public final String USERS = "users";
     private String inviteUserResult;
+    private List<Group> groupList = new ArrayList<>(); //gemmer Note objekter. Kan opdateres.
+    private Updatable activity;
 
+
+    public void setActivity(Updatable a, String userID) { //kaldes fra aktivitet som skal blive opdateret
+        activity = a;
+        startListener(userID);
+    }
 
     public void addGroup(Group group, String groupProfileID) {
         DocumentReference ref = db.collection(GROUPS).document(group.getId()); //opret nyt dokument i Firebase hvor vi selv angiver document id
@@ -75,5 +85,23 @@ public class GroupRepo {
                 }
             }
         });
+    }
+
+    public void startListener(String userID) { // SnapshotListener den lytter hele tiden
+        db.collection(USERS).document(userID).collection(USER_PROFILES).addSnapshotListener((value, error) -> {
+            groupList.clear();
+            for (DocumentSnapshot snap: value.getDocuments()) {
+                db.collection(GROUPS).document(snap.getId()).addSnapshotListener((value1, error1) -> {
+                    Group group = new Group(value1.get(GROUP_NAME).toString(), value1.getId());
+                    groupList.add(group);
+                    activity.update(null); // kaldes efter vi har hentet data fra Firebase
+                });
+            }
+        });
+    }
+
+    public List<Group> myGroups() {
+
+        return groupList;
     }
 }
