@@ -88,6 +88,10 @@ public class GroupRepo {
         });
     }
 
+    public void showGroupProfileInfo() {
+
+    }
+
     public void startListener(String userID) { // SnapshotListener den lytter hele tiden
         db.collection(USERS).document(userID).collection(USER_PROFILES).addSnapshotListener((value, error) -> {
             groupList.clear();
