@@ -1,11 +1,15 @@
 package com.example.wecompete;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.wecompete.R;
@@ -25,6 +29,7 @@ public class CurrentGroup extends AppCompatActivity {
     private UserRepo userRepo = new UserRepo();
     private GroupRepo groupRepo = new GroupRepo();
     private Button inviteUserBtn;
+    private String m_Text = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +50,33 @@ public class CurrentGroup extends AppCompatActivity {
         inviteUserBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groupRepo.inviteUser("patr7756", currentGroup.getId());
-                finish();
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(CurrentGroup.this);
+                builder.setTitle("Invite User");
+
+// Set up the input
+                final EditText input = new EditText(CurrentGroup.this);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+// Set up the buttons
+                builder.setPositiveButton("Invite", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_Text = input.getText().toString();
+                        groupRepo.inviteUser(m_Text, currentGroup.getId());
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
         });
 
