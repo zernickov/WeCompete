@@ -29,6 +29,7 @@ public class GroupRepo {
     public final String GROUP_NAME = "name";
     public final String GROUP_PROFILES = "groupprofiles";
     public final String USER_PROFILES = "userprofile";
+    public final String USERNAME = "username";
     public final String ELO = "ELO";
     private User user = new User();
     public final String USERS = "users";
@@ -71,7 +72,34 @@ public class GroupRepo {
         });
     }
 
-    public void inviteUser() {
+    public void inviteUser(String userInput, String groupID) {
+        db.collection(USERS).whereEqualTo(USERNAME, userInput).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        document.getId();
+                        DocumentReference ref = db.collection(USERS).document(document.getId()).collection(USER_PROFILES).document(groupID);
+                        Map<String, String> colMap2 = new HashMap<>();
+                        colMap2.put("VALUE", "null");
+                        ref.set(colMap2).addOnCompleteListener(task2 -> {
+                            if (!task2.isSuccessful()){
+                                System.out.println("error i opret collection groupprofiles: " + task2.getException());
+                            }
+                        });
+                        DocumentReference ref2 = db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).document(document.getId());
+                        Map<String, String> colMap = new HashMap<>();
+                        colMap.put(ELO, "1000");
+                        ref2.set(colMap).addOnCompleteListener(task3 -> {
+                            if (!task3.isSuccessful()){
+                                System.out.println("error i opret collection groupprofiles: " + task3.getException());
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        /*
         db.collection(USERS).whereEqualTo("username", "robi0297").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -80,16 +108,18 @@ public class GroupRepo {
                         inviteUserResult = document.getId();
                         System.out.println("WHYWHYWHY"+ inviteUserResult);
                         System.out.println(document.getId() + " => " + document.getData());
+                        //todo get userID
+                        //til oprettelse i groupprofiles
+
+
+                        //todo get userID
+                        //til oprettelse i userprofile
                     }
                 } else {
                     System.out.println("ERROR: getting documents: "+ task.getException());
                 }
             }
-        });
-    }
-
-    public void showGroupProfileInfo() {
-
+        });*/
     }
 
     public void startListener(String userID) { // SnapshotListener den lytter hele tiden
@@ -106,7 +136,6 @@ public class GroupRepo {
     }
 
     public List<Group> myGroups() {
-
         return groupList;
     }
 }
