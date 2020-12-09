@@ -7,6 +7,7 @@ import com.example.wecompete.model.GroupProfile;
 import com.example.wecompete.model.Match;
 import com.example.wecompete.model.User;
 import com.example.wecompete.model.UserProfile;
+
 import com.example.wecompete.service.Updatable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -129,6 +130,34 @@ public class GroupRepo {
         ref.set(colMap).addOnCompleteListener(task -> {
             if (!task.isSuccessful()){
                 System.out.println("error i opret collection groupprofiles: " + task.getException());
+            }
+        });
+    }
+
+    public void updateNewElo(String userID, String userInput, String groupID, String myNewElo, String newEloOpponent) {
+        db.collection(USERS).whereEqualTo(USERNAME, userInput).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        DocumentReference ref = db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).document(document.getId());
+                        Map<String, String> colMap2 = new HashMap<>();
+                        colMap2.put(ELO, newEloOpponent);
+                        ref.set(colMap2).addOnCompleteListener(task2 -> {
+                            if (!task2.isSuccessful()){
+                                System.out.println("error i ny elo for modstander: " + task2.getException());
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        DocumentReference ref2 = db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).document(userID);
+        Map<String, String> colMap = new HashMap<>();
+        colMap.put(ELO, myNewElo);
+        ref2.set(colMap).addOnCompleteListener(task3 -> {
+            if (!task3.isSuccessful()){
+                System.out.println("error i brugers nye elo: " + task3.getException());
             }
         });
     }

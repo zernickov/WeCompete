@@ -1,0 +1,48 @@
+package com.example.wecompete.service;
+
+import com.example.wecompete.repo.GroupRepo;
+
+public class MatchService {
+    private GroupRepo groupRepo = new GroupRepo();
+
+    // Function to calculate the Probability
+    public float Probability(float rating1, float rating2) {
+        return 1.0f * 1.0f / (1 + 1.0f *
+                (float)(Math.pow(10, 1.0f *
+                        (rating1 - rating2) / 400)));
+    }
+
+    // Function to calculate Elo rating
+    // K is a constant.
+    // d determines whether Player A wins
+    // or Player B.
+    public void EloRating(float Ra, float Rb, int K, boolean d, String userID, String userInput, String groupID) {
+        // To calculate the Winning
+        // Probability of Player B
+        float Pb = Probability(Ra, Rb);
+
+        // To calculate the Winning
+        // Probability of Player A
+        float Pa = Probability(Rb, Ra);
+
+        // Case -1 When Player A wins
+        // Updating the Elo Ratings
+        if (d) {
+            Ra = Ra + K * (1 - Pa);
+            Rb = Rb + K * (0 - Pb);
+            String Ra2 = String.valueOf(Ra);
+            String Rb2 = String.valueOf(Rb);
+            groupRepo.updateNewElo(userID, userInput, groupID, Ra2, Rb2);
+        }
+
+        // Case -2 When Player B wins
+        // Updating the Elo Ratings
+        else {
+            Ra = Ra + K * (0 - Pa);
+            Rb = Rb + K * (1 - Pb);
+            String Ra2 = String.valueOf(Ra);
+            String Rb2 = String.valueOf(Rb);
+            groupRepo.updateNewElo(userID, userInput, groupID, Ra2, Rb2);
+        }
+    }
+}

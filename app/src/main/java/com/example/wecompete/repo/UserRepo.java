@@ -69,7 +69,7 @@ public class UserRepo {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        textView.setText("ELO: " + document.get("ELO").toString());
+                        textView.setText(document.get("ELO").toString());
                         //myUsernameTextView.setText(document.get("ELO").toString());
                     } else {
                         System.out.println("No such document");

@@ -1,5 +1,6 @@
 package com.example.wecompete;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,9 +17,24 @@ import com.example.wecompete.R;
 import com.example.wecompete.global.Global;
 import com.example.wecompete.model.Group;
 import com.example.wecompete.model.Match;
+import com.example.wecompete.model.User;
 import com.example.wecompete.repo.GroupRepo;
 import com.example.wecompete.repo.UserRepo;
+import com.example.wecompete.service.MatchService;
+import com.example.wecompete.service.Updatable;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CurrentGroup extends AppCompatActivity {
 
@@ -29,9 +45,27 @@ public class CurrentGroup extends AppCompatActivity {
     public FirebaseAuth mFirebaseAuth;
     private UserRepo userRepo = new UserRepo();
     private GroupRepo groupRepo = new GroupRepo();
+    private MatchService matchService = new MatchService();
     private Button inviteUserBtn;
     private String m_Text = "";
     private Button registerMatchBtn;
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public final String GROUPS = "groups";
+    public final String GROUP_NAME = "name";
+    public final String GROUP_PROFILES = "groupprofiles";
+    public final String USER_PROFILES = "userprofile";
+    public final String USERNAME = "username";
+    public final String ELO = "ELO";
+    public final String WINNER = "winner";
+    public final String LOSER = "loser";
+    public final String MATCH_TIME = "matchtime";
+    public final String MATCHES = "matches";
+    private User user = new User();
+    public final String USERS = "users";
+    private String inviteUserResult;
+    private List<Group> groupList = new ArrayList<>(); //gemmer Note objekter. Kan opdateres.
+    private Updatable activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,23 +102,67 @@ public class CurrentGroup extends AppCompatActivity {
                         dialog.cancel();
                     }
                 });
-                builder.setPositiveButton("I Lost", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("I Lost", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         m_Text = input.getText().toString();
                         groupRepo.inviteUser(m_Text, currentGroup.getId());
                     }
                 });
-                builder.setNegativeButton("I Won", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Match match = new Match("12:48", "robi0297", "test");
-                        groupRepo.registerMatch(currentGroup.getId(), match);
+                builder.setPositiveButton("I Won", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Match match = new Match("12:48", "robi0297", "test");
+                                groupRepo.registerMatch(currentGroup.getId(), match);
+                                //groupRepo.updateNewElo(mFirebaseAuth.getUid(), m_Text, currentGroup.getId(), "1200", "800");
+                                System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX");
+                                db.collection(USERS).whereEqualTo(USERNAME, "test").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX");
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                DocumentReference ref = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(document.getId());
+                                                ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                        if (task.isSuccessful()) {
+                                                            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX");
+                                                            DocumentSnapshot document = task.getResult();
+                                                            if (document.exists()) {
+                                                                System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX");
+                                                                float opponentELOFloat = Float.parseFloat(document.get(ELO).toString());
+                                                                System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX");
+                                                                DocumentReference docRef2 = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(mFirebaseAuth.getUid());
+                                                                docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            DocumentSnapshot document2 = task.getResult();
+                                                                            if (document2.exists()) {
+                                                                                float myELOFloat = Float.parseFloat(document2.get(ELO).toString());
+                                                                                System.out.println("BEFORE CALCULATION:" + myELOFloat);
+                                                                                System.out.println("BEFORE CALCULATION:" + opponentELOFloat);
+                                                                                matchService.EloRating(myELOFloat, opponentELOFloat, 30, true, mFirebaseAuth.getUid(), "test", currentGroup.getId());
+
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        builder.show();
                     }
                 });
-                builder.show();
-            }
-        });
+
 
         inviteUserBtn.setOnClickListener(new View.OnClickListener() {
             @Override
