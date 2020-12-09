@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class Group {
     private String groupName;
-    private String id = UUID.randomUUID().toString();; //default
+    private String id = UUID.randomUUID().toString(); //default
 
     public Group(String groupName, String _id) {
         this.groupName = groupName;

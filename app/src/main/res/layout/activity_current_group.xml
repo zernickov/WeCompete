@@ -12,6 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="33dp"
         android:text="TextView"
+        android:textColor="#FF9800"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,11 +23,12 @@
         android:id="@+id/usernameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="192dp"
+        android:layout_marginTop="20dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentGroupNameTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/createMatchButton" />
 
     <TextView
         android:id="@+id/eloTextView"
@@ -40,9 +44,21 @@
         android:id="@+id/inviteUserBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="10dp"
         android:text="Invite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/createMatchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="185dp"
+        android:backgroundTint="#FF9800"
+        android:text="Register Match"
+        app:cornerRadius="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currentGroupNameTextView" />
 </androidx.constraintlayout.widget.ConstraintLayout>
