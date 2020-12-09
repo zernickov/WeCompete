@@ -1,11 +1,13 @@
 package com.example.wecompete;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -112,39 +114,47 @@ public class CurrentGroup extends AppCompatActivity {
                 builder.setPositiveButton("I Won", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Match match = new Match("12:48", "robi0297", "test");
-                                groupRepo.registerMatch(currentGroup.getId(), match);
+                                m_Text = input.getText().toString();
                                 //groupRepo.updateNewElo(mFirebaseAuth.getUid(), m_Text, currentGroup.getId(), "1200", "800");
-                                System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX");
-                                db.collection(USERS).whereEqualTo(USERNAME, "test").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                db.collection(USERS).whereEqualTo(USERNAME, m_Text).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                         if (task.isSuccessful()) {
-                                            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX");
                                             for (QueryDocumentSnapshot document : task.getResult()) {
                                                 DocumentReference ref = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(document.getId());
                                                 ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                     @Override
-                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                        if (task.isSuccessful()) {
-                                                            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX");
-                                                            DocumentSnapshot document = task.getResult();
-                                                            if (document.exists()) {
-                                                                System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX");
-                                                                float opponentELOFloat = Float.parseFloat(document.get(ELO).toString());
-                                                                System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX");
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task2) {
+                                                        if (task2.isSuccessful()) {
+                                                            DocumentSnapshot document2 = task2.getResult();
+                                                            if (document2.exists()) {
+                                                                float opponentELOFloat = Float.parseFloat(document2.get(ELO).toString());
                                                                 DocumentReference docRef2 = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(mFirebaseAuth.getUid());
                                                                 docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                                     @Override
-                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                        if (task.isSuccessful()) {
-                                                                            DocumentSnapshot document2 = task.getResult();
-                                                                            if (document2.exists()) {
-                                                                                float myELOFloat = Float.parseFloat(document2.get(ELO).toString());
-                                                                                System.out.println("BEFORE CALCULATION:" + myELOFloat);
-                                                                                System.out.println("BEFORE CALCULATION:" + opponentELOFloat);
-                                                                                matchService.EloRating(myELOFloat, opponentELOFloat, 30, true, mFirebaseAuth.getUid(), "test", currentGroup.getId());
-
+                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task3) {
+                                                                        if (task3.isSuccessful()) {
+                                                                            DocumentSnapshot document3 = task3.getResult();
+                                                                            if (document3.exists()) {
+                                                                                float myELOFloat = Float.parseFloat(document3.get(ELO).toString());
+                                                                                matchService.EloRating(myELOFloat, opponentELOFloat, 30, true, mFirebaseAuth.getUid(), m_Text, currentGroup.getId());
+                                                                                DocumentReference docRef3 = db.collection(USERS).document(mFirebaseAuth.getUid());
+                                                                                docRef3.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                                    @RequiresApi(api = Build.VERSION_CODES.O)
+                                                                                    @Override
+                                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task4) {
+                                                                                        if (task4.isSuccessful()) {
+                                                                                            DocumentSnapshot document4 = task4.getResult();
+                                                                                            if (document4.exists()) {
+                                                                                                Match match = new Match(matchService.fetchDateTimeForMatch(), document4.get(USERNAME).toString(), document.get(USERNAME).toString());
+                                                                                                groupRepo.registerMatch(currentGroup.getId(), match);
+                                                                                                finish();
+                                                                                                Intent i = new Intent(CurrentGroup.this, CurrentGroup.class);
+                                                                                                startActivity(i);
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                });
                                                                             }
                                                                         }
                                                                     }

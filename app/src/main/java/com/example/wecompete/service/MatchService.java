@@ -1,9 +1,23 @@
 package com.example.wecompete.service;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.example.wecompete.repo.GroupRepo;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class MatchService {
     private GroupRepo groupRepo = new GroupRepo();
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public String fetchDateTimeForMatch() {
+        LocalDateTime currentDate = LocalDateTime.now();
+        DateTimeFormatter formatForDate = DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy");
+        return currentDate.format(formatForDate);
+    }
 
     // Function to calculate the Probability
     public float Probability(float rating1, float rating2) {

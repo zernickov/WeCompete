@@ -47,8 +47,6 @@ public class UserRepo {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        System.out.println("DocumentSnapshot data: " + document.getData());
-                        System.out.println(document.get("username").toString());
                         textView.setText(document.get("username").toString());
 
                     } else {
