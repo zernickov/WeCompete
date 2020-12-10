@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -20,7 +19,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.wecompete.R;
 import com.example.wecompete.global.Global;
 import com.example.wecompete.model.Group;
 import com.example.wecompete.model.Match;
@@ -39,9 +37,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CurrentGroup extends AppCompatActivity {
 
@@ -89,7 +85,7 @@ public class CurrentGroup extends AppCompatActivity {
         myELORatingTextView = findViewById(R.id.eloTextView);
         inviteUserBtn = findViewById(R.id.inviteUserBtn);
         registerMatchBtn = findViewById(R.id.createMatchButton);
-        myRankIcon = findViewById(R.id.myRankIcon);
+        myRankIcon = findViewById(R.id.myRankIconForLeaderboard);
         myLeaderBoardBtn = findViewById(R.id.myLeaderboardBtn);
 
         currentGroupNameTextView.setText(currentGroup.getGroupName());

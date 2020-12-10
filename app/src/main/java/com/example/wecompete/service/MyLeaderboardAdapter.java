@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.wecompete.R;
@@ -49,6 +50,19 @@ public class MyLeaderboardAdapter extends BaseAdapter {
         textView.setText(groupProfileData.get(position).getGroupUsername());
         TextView textView2 = convertView.findViewById(R.id.myLeaderboardRowTextView5);
         textView2.setText(groupProfileData.get(position).getELO());
+
+        ImageView rankIcon = convertView.findViewById(R.id.myRankIconForLeaderboard);
+
+        float myELOFloatForRankIcon = Float.parseFloat(groupProfileData.get(position).getELO());
+        if (myELOFloatForRankIcon < 500) {
+            rankIcon.setImageResource(R.drawable.wecompetebronzewithouttext);
+        } else if (myELOFloatForRankIcon >= 500 && myELOFloatForRankIcon <= 1000) {
+            rankIcon.setImageResource(R.drawable.wecompetesilverwithouttext);
+        } else if (myELOFloatForRankIcon > 1000 && myELOFloatForRankIcon < 1500) {
+            rankIcon.setImageResource(R.drawable.wecompetegoldwithouttext);
+        } else if (myELOFloatForRankIcon >= 1500) {
+            rankIcon.setImageResource(R.drawable.wecompeteplatinumwithouttext);
+        }
         //ImageView imageView = convertView.findViewById(R.id.myImageView);
         //imageView.setImageResource(images[position]);
         return convertView;

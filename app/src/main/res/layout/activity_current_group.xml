@@ -60,10 +60,10 @@
         app:cornerRadius="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/myRankIcon" />
+        app:layout_constraintTop_toBottomOf="@+id/myRankIconForLeaderboard" />
 
     <ImageView
-        android:id="@+id/myRankIcon"
+        android:id="@+id/myRankIconForLeaderboard"
         android:layout_width="232dp"
         android:layout_height="230dp"
         android:layout_marginTop="7dp"
