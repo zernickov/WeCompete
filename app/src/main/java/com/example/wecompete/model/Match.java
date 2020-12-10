@@ -3,7 +3,7 @@ package com.example.wecompete.model;
 import java.util.UUID;
 
 public class Match {
-    private String id = UUID.randomUUID().toString(); //default
+    private String id;
     private String matchTime;
     private String winner;
     private String loser;

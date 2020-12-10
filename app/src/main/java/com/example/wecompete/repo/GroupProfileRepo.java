@@ -1,0 +1,43 @@
+package com.example.wecompete.repo;
+
+import com.example.wecompete.model.Group;
+import com.example.wecompete.model.GroupProfile;
+import com.example.wecompete.service.Updatable;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class GroupProfileRepo {
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private List<GroupProfile> groupProfilesList = new ArrayList<>(); //gemmer Note objekter. Kan opdateres.
+    private Updatable activity;
+    public final String GROUPS = "groups";
+    public final String GROUP_NAME = "name";
+    public final String GROUP_PROFILES = "groupprofiles";
+    public final String USER_PROFILES = "userprofile";
+    public final String USERNAME = "username";
+    public final String ELO = "ELO";
+
+
+    public void setActivity(Updatable a, String groupID) { //kaldes fra aktivitet som skal blive opdateret
+        activity = a;
+        startListener(groupID);
+    }
+
+    public void startListener(String groupID) { // SnapshotListener den lytter hele tiden
+        db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).addSnapshotListener((value, error) -> {
+            groupProfilesList.clear();
+            for (DocumentSnapshot snap: value.getDocuments()) {
+                GroupProfile groupProfile = new GroupProfile(snap.get(ELO).toString(), snap.getId());
+                groupProfilesList.add(groupProfile);
+                activity.update(null);
+            }
+        });
+    }
+
+    public List<GroupProfile> myGroupsProfiles() {
+        return groupProfilesList;
+    }
+}

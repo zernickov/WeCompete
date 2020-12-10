@@ -1,6 +1,9 @@
 package com.example.wecompete.repo;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.example.wecompete.model.Group;
 import com.example.wecompete.model.GroupProfile;
@@ -18,6 +21,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,9 +125,12 @@ public class GroupRepo {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void registerMatch(String groupID, Match match) {
         //opret nyt dokument i Firebase hvor vi selv angiver document id
-        DocumentReference ref = db.collection(GROUPS).document(groupID).collection(MATCHES).document(match.getId());
+        LocalDateTime currentDate = LocalDateTime.now();
+        DateTimeFormatter formatForDate = DateTimeFormatter.ofPattern("HH:mm:ss.SSS dd-MM-yyyy");
+        DocumentReference ref = db.collection(GROUPS).document(groupID).collection(MATCHES).document(currentDate.format(formatForDate));
         Map<String, String> colMap = new HashMap<>();
         colMap.put(WINNER, match.getWinner());
         colMap.put(LOSER, match.getLoser());

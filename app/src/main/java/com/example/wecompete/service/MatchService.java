@@ -15,7 +15,7 @@ public class MatchService {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String fetchDateTimeForMatch() {
         LocalDateTime currentDate = LocalDateTime.now();
-        DateTimeFormatter formatForDate = DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy");
+        DateTimeFormatter formatForDate = DateTimeFormatter.ofPattern("HH:mm dd-MM-yyyy");
         return currentDate.format(formatForDate);
     }
 

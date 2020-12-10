@@ -8,23 +8,23 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.wecompete.R;
-import com.example.wecompete.model.Group;
+import com.example.wecompete.model.GroupProfile;
 
 import java.util.List;
 
-public class MyGroupsAdapter extends BaseAdapter {
-    private List<Group> data;
+public class MyLeaderboardAdapter extends BaseAdapter {
+    private List<GroupProfile> groupProfileData;
     private LayoutInflater layoutInflater;
 
-    public MyGroupsAdapter(Context context, List<Group> data) {
-        this.data = data;
+    public MyLeaderboardAdapter(Context context, List<GroupProfile> groupProfileData) {
+        this.groupProfileData = groupProfileData;
         //from er en statisk metode
         layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return data.size();
+        return groupProfileData.size();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class MyGroupsAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.my_group_row, null);
         }
         TextView textView = convertView.findViewById(R.id.myLeaderboardRowTextView);
-        textView.setText(data.get(position).getGroupName());
+        textView.setText(groupProfileData.get(position).getELO());
         //ImageView imageView = convertView.findViewById(R.id.myImageView);
         //imageView.setImageResource(images[position]);
         return convertView;

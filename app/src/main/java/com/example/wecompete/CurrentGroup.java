@@ -14,6 +14,7 @@ import android.text.InputType;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -73,6 +74,7 @@ public class CurrentGroup extends AppCompatActivity {
     private String inviteUserResult;
     private List<Group> groupList = new ArrayList<>(); //gemmer Note objekter. Kan opdateres.
     private Updatable activity;
+    private Button myLeaderBoardBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,7 @@ public class CurrentGroup extends AppCompatActivity {
         inviteUserBtn = findViewById(R.id.inviteUserBtn);
         registerMatchBtn = findViewById(R.id.createMatchButton);
         myRankIcon = findViewById(R.id.myRankIcon);
+        myLeaderBoardBtn = findViewById(R.id.myLeaderboardBtn);
 
         currentGroupNameTextView.setText(currentGroup.getGroupName());
         userRepo.showUsername(myUsernameTextView, mFirebaseAuth.getUid());
@@ -129,12 +132,15 @@ public class CurrentGroup extends AppCompatActivity {
             public void onClick(View v) {
                 //create AlertDialog boks
                 AlertDialog.Builder builder = new AlertDialog.Builder(CurrentGroup.this);
-                builder.setTitle("Invite User");
+                builder.setTitle("Choose Opponent");
                 // Set up the input
-                final EditText input = new EditText(CurrentGroup.this);
+                //final EditText input = new EditText(CurrentGroup.this);
                 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                builder.setView(input);
+                //input.setInputType(InputType.TYPE_CLASS_TEXT);
+                //builder.setView(input);
+                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(CurrentGroup.this, android.R.layout.select_dialog_singlechoice);
+                arrayAdapter.add("test");
+                arrayAdapter.add("patr7756");
                 // Set up the buttons
                 builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -142,17 +148,31 @@ public class CurrentGroup extends AppCompatActivity {
                         dialog.cancel();
                     }
                 });
-                builder.setNegativeButton("I Lost", new DialogInterface.OnClickListener() {
+
+
+                builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        m_Text = input.getText().toString();
-                        groupRepo.inviteUser(m_Text, currentGroup.getId());
-                    }
-                });
-                builder.setPositiveButton("I Won", new DialogInterface.OnClickListener() {
+                        String m_Text = arrayAdapter.getItem(which);
+                        AlertDialog.Builder builderInner = new AlertDialog.Builder(CurrentGroup.this);
+                        builderInner.setMessage(m_Text);
+                        builderInner.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                m_Text = input.getText().toString();
+                                dialog.cancel();
+                            }
+                        });
+                        builderInner.setNegativeButton("I Lost", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //m_Text = input.getText().toString();
+                                dialog.cancel();
+                            }
+                        });
+                        builderInner.setPositiveButton("I Won", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //m_Text = input.getText().toString();
                                 //groupRepo.updateNewElo(mFirebaseAuth.getUid(), m_Text, currentGroup.getId(), "1200", "800");
                                 db.collection(USERS).whereEqualTo(USERNAME, m_Text).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
@@ -207,6 +227,9 @@ public class CurrentGroup extends AppCompatActivity {
                                 });
                             }
                         });
+                        builderInner.show();
+                    }
+                });
                         builder.show();
                     }
                 });
@@ -237,6 +260,14 @@ public class CurrentGroup extends AppCompatActivity {
                     }
                 });
                 builder.show();
+            }
+        });
+
+        myLeaderBoardBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent leaderBoardPage = new Intent(CurrentGroup.this, CurrentGroupLeaderboard.class);
+                startActivity(leaderBoardPage);
             }
         });
 
