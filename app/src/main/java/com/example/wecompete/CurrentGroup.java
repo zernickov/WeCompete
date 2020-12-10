@@ -12,6 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -90,6 +92,9 @@ public class CurrentGroup extends AppCompatActivity {
         userRepo.showUsername(myUsernameTextView, mFirebaseAuth.getUid());
         userRepo.showELO(myELORatingTextView, currentGroup.getId(), mFirebaseAuth.getUid());
 
+        //stackoverflow link: https://stackoverflow.com/questions/2597329/how-to-do-a-fadein-of-an-image-on-an-android-activity-screen
+        Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.picturefadein);
+        myRankIcon.startAnimation(myFadeInAnimation); //Set animation to your ImageView
 
 
         DocumentReference docRef2 = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(mFirebaseAuth.getUid());
