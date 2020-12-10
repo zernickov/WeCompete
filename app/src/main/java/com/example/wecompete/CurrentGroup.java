@@ -68,6 +68,7 @@ public class CurrentGroup extends AppCompatActivity {
     public final String WINNER = "winner";
     public final String LOSER = "loser";
     public final String MATCH_TIME = "matchtime";
+    public final String GROUP_USERNAME = "groupusername";
     public final String MATCHES = "matches";
     private User user = new User();
     public final String USERS = "users";
@@ -139,8 +140,14 @@ public class CurrentGroup extends AppCompatActivity {
                 //input.setInputType(InputType.TYPE_CLASS_TEXT);
                 //builder.setView(input);
                 final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(CurrentGroup.this, android.R.layout.select_dialog_singlechoice);
-                arrayAdapter.add("test");
-                arrayAdapter.add("patr7756");
+                db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).addSnapshotListener((value, error) -> {
+                    arrayAdapter.clear();
+                    for (DocumentSnapshot snap: value.getDocuments()) {
+                        if (!snap.getId().equals(mFirebaseAuth.getUid())) {
+                            arrayAdapter.add(snap.get(GROUP_USERNAME).toString());
+                        }
+                    }
+                });
                 // Set up the buttons
                 builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override

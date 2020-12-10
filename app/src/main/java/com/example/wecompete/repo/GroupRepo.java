@@ -42,6 +42,7 @@ public class GroupRepo {
     public final String LOSER = "loser";
     public final String MATCH_TIME = "matchtime";
     public final String MATCHES = "matches";
+    public final String GROUP_USERNAME = "groupusername";
     private User user = new User();
     public final String USERS = "users";
     private String inviteUserResult;
@@ -64,13 +65,16 @@ public class GroupRepo {
                 System.out.println("error i gem: " +task.getException());
             }
         });//gemmer hele map i aktuelt dokument
-        DocumentReference documentReference = ref.collection(GROUP_PROFILES).document(groupProfileID);
-        Map<String, String> colMap = new HashMap<>();
-        colMap.put(ELO, "1000");
-        documentReference.set(colMap).addOnCompleteListener(task -> {
-            if (!task.isSuccessful()){
-                System.out.println("error i opret collection groupprofiles: " + task.getException());
-            }
+        db.collection(USERS).document(groupProfileID).addSnapshotListener((value, error) -> {
+            DocumentReference documentReference = db.collection(GROUPS).document(group.getId()).collection(GROUP_PROFILES).document(groupProfileID);
+            Map<String, String> colMap = new HashMap<>();
+            colMap.put(ELO, "1000");
+            colMap.put(GROUP_USERNAME, value.get(USERNAME).toString());
+            documentReference.set(colMap).addOnCompleteListener(task -> {
+                if (!task.isSuccessful()){
+                    System.out.println("error i opret collection groupprofiles: " + task.getException());
+                }
+            });
         });
         DocumentReference ref2 = db.collection(USERS).document(groupProfileID);
         DocumentReference documentReference2 = ref2.collection(USER_PROFILES).document(group.getId());
@@ -101,6 +105,7 @@ public class GroupRepo {
                         DocumentReference ref2 = db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).document(document.getId());
                         Map<String, String> colMap = new HashMap<>();
                         colMap.put(ELO, "1000");
+                        colMap.put(GROUP_USERNAME, userInput);
                         ref2.set(colMap).addOnCompleteListener(task3 -> {
                             if (!task3.isSuccessful()){
                                 System.out.println("error i opret collection groupprofiles: " + task3.getException());
@@ -149,25 +154,13 @@ public class GroupRepo {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         DocumentReference ref = db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).document(document.getId());
-                        Map<String, String> colMap2 = new HashMap<>();
-                        colMap2.put(ELO, newEloOpponent);
-                        ref.set(colMap2).addOnCompleteListener(task2 -> {
-                            if (!task2.isSuccessful()){
-                                System.out.println("error i ny elo for modstander: " + task2.getException());
-                            }
-                        });
+                        ref.update(ELO, newEloOpponent);
                     }
                 }
             }
         });
         DocumentReference ref2 = db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).document(userID);
-        Map<String, String> colMap = new HashMap<>();
-        colMap.put(ELO, myNewElo);
-        ref2.set(colMap).addOnCompleteListener(task3 -> {
-            if (!task3.isSuccessful()){
-                System.out.println("error i brugers nye elo: " + task3.getException());
-            }
-        });
+        ref2.update(ELO, myNewElo);
     }
 
     public List<Group> myGroups() {

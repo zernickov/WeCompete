@@ -19,6 +19,7 @@ public class GroupProfileRepo {
     public final String USER_PROFILES = "userprofile";
     public final String USERNAME = "username";
     public final String ELO = "ELO";
+    public final String GROUP_USERNAME = "groupusername";
 
 
     public void setActivity(Updatable a, String groupID) { //kaldes fra aktivitet som skal blive opdateret
@@ -30,7 +31,7 @@ public class GroupProfileRepo {
         db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).addSnapshotListener((value, error) -> {
             groupProfilesList.clear();
             for (DocumentSnapshot snap: value.getDocuments()) {
-                GroupProfile groupProfile = new GroupProfile(snap.get(ELO).toString(), snap.getId());
+                GroupProfile groupProfile = new GroupProfile(snap.get(ELO).toString(), snap.getId(), snap.get(GROUP_USERNAME).toString());
                 groupProfilesList.add(groupProfile);
                 activity.update(null);
             }
