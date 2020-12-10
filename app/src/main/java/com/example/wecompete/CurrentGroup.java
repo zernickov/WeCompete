@@ -7,12 +7,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.wecompete.R;
@@ -51,6 +53,7 @@ public class CurrentGroup extends AppCompatActivity {
     private Button inviteUserBtn;
     private String m_Text = "";
     private Button registerMatchBtn;
+    private ImageView myRankIcon;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     public final String GROUPS = "groups";
@@ -81,10 +84,40 @@ public class CurrentGroup extends AppCompatActivity {
         myELORatingTextView = findViewById(R.id.eloTextView);
         inviteUserBtn = findViewById(R.id.inviteUserBtn);
         registerMatchBtn = findViewById(R.id.createMatchButton);
+        myRankIcon = findViewById(R.id.myRankIcon);
 
         currentGroupNameTextView.setText(currentGroup.getGroupName());
         userRepo.showUsername(myUsernameTextView, mFirebaseAuth.getUid());
         userRepo.showELO(myELORatingTextView, currentGroup.getId(), mFirebaseAuth.getUid());
+
+
+
+        DocumentReference docRef2 = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(mFirebaseAuth.getUid());
+        docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        //TODO (logik) sæt i metode i groupprofileService
+                        float myELOFloatForRankIcon = Float.parseFloat(document.get(ELO).toString());
+                        if (myELOFloatForRankIcon < 501) {
+                            myRankIcon.setImageResource(R.drawable.wecompetebronze);
+                        } else if (myELOFloatForRankIcon > 500 && myELOFloatForRankIcon < 1001) {
+                            myRankIcon.setImageResource(R.drawable.wecompetesilver);
+                        } else if (myELOFloatForRankIcon > 1000 && myELOFloatForRankIcon < 1501) {
+                            myRankIcon.setImageResource(R.drawable.wecompetegold);
+                        } else if (myELOFloatForRankIcon > 1500) {
+                            myRankIcon.setImageResource(R.drawable.wecompeteplatinum);
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+
 
         registerMatchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
