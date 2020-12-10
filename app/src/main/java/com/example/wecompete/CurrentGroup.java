@@ -106,13 +106,13 @@ public class CurrentGroup extends AppCompatActivity {
                     if (document.exists()) {
                         //TODO (logik) sæt i metode i groupprofileService
                         float myELOFloatForRankIcon = Float.parseFloat(document.get(ELO).toString());
-                        if (myELOFloatForRankIcon < 501) {
+                        if (myELOFloatForRankIcon < 500) {
                             myRankIcon.setImageResource(R.drawable.wecompetebronze);
-                        } else if (myELOFloatForRankIcon > 500 && myELOFloatForRankIcon < 1001) {
+                        } else if (myELOFloatForRankIcon >= 500 && myELOFloatForRankIcon <= 1000) {
                             myRankIcon.setImageResource(R.drawable.wecompetesilver);
-                        } else if (myELOFloatForRankIcon > 1000 && myELOFloatForRankIcon < 1501) {
+                        } else if (myELOFloatForRankIcon > 1000 && myELOFloatForRankIcon < 1500) {
                             myRankIcon.setImageResource(R.drawable.wecompetegold);
-                        } else if (myELOFloatForRankIcon > 1500) {
+                        } else if (myELOFloatForRankIcon >= 1500) {
                             myRankIcon.setImageResource(R.drawable.wecompeteplatinum);
                         }
                     }
