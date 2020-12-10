@@ -1,7 +1,12 @@
 package com.example.wecompete.repo;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.example.wecompete.model.Group;
 import com.example.wecompete.model.GroupProfile;
+import com.example.wecompete.service.EloSorter;
 import com.example.wecompete.service.Updatable;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,11 +27,13 @@ public class GroupProfileRepo {
     public final String GROUP_USERNAME = "groupusername";
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setActivity(Updatable a, String groupID) { //kaldes fra aktivitet som skal blive opdateret
         activity = a;
         startListener(groupID);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void startListener(String groupID) { // SnapshotListener den lytter hele tiden
         db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).addSnapshotListener((value, error) -> {
             groupProfilesList.clear();
@@ -35,8 +42,10 @@ public class GroupProfileRepo {
                 groupProfilesList.add(groupProfile);
                 activity.update(null);
             }
+            groupProfilesList.sort(new EloSorter());
         });
     }
+
 
     public List<GroupProfile> myGroupsProfiles() {
         return groupProfilesList;

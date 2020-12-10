@@ -1,5 +1,6 @@
 package com.example.wecompete.service;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,13 +39,16 @@ public class MyLeaderboardAdapter extends BaseAdapter {
     }
 
     //I denne metode kan det lave dynamisk.. set image på baggrund af textview i stedet for position
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.my_group_row, null);
+            convertView = layoutInflater.inflate(R.layout.my_leaderboard_row, null);
         }
         TextView textView = convertView.findViewById(R.id.myLeaderboardRowTextView);
-        textView.setText(groupProfileData.get(position).getELO());
+        textView.setText(groupProfileData.get(position).getGroupUsername());
+        TextView textView2 = convertView.findViewById(R.id.myLeaderboardRowTextView5);
+        textView2.setText(groupProfileData.get(position).getELO());
         //ImageView imageView = convertView.findViewById(R.id.myImageView);
         //imageView.setImageResource(images[position]);
         return convertView;

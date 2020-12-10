@@ -1,7 +1,9 @@
 package com.example.wecompete;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.ListView;
 
@@ -22,6 +24,7 @@ public class CurrentGroupLeaderboard extends AppCompatActivity implements Updata
     private Group currentGroup;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
