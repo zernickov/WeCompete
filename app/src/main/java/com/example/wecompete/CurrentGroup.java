@@ -36,6 +36,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +74,8 @@ public class CurrentGroup extends AppCompatActivity {
     private List<Group> groupList = new ArrayList<>(); //gemmer Note objekter. Kan opdateres.
     private Updatable activity;
     private Button myLeaderBoardBtn;
+    private Button myMatchesBtn;
+    private Button backBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +91,8 @@ public class CurrentGroup extends AppCompatActivity {
         registerMatchBtn = findViewById(R.id.createMatchButton);
         myRankIcon = findViewById(R.id.myRankIconForLeaderboard);
         myLeaderBoardBtn = findViewById(R.id.myLeaderboardBtn);
+        myMatchesBtn = findViewById(R.id.myMatchesBtn);
+        backBtn = findViewById(R.id.backFromCurrentGroupBtn);
 
         currentGroupNameTextView.setText(currentGroup.getGroupName());
         userRepo.showUsername(myUsernameTextView, mFirebaseAuth.getUid());
@@ -207,7 +213,9 @@ public class CurrentGroup extends AppCompatActivity {
                                                                                         if (task4.isSuccessful()) {
                                                                                             DocumentSnapshot document4 = task4.getResult();
                                                                                             if (document4.exists()) {
-                                                                                                Match match = new Match(matchService.fetchDateTimeForMatch(), document4.get(USERNAME).toString(), document.get(USERNAME).toString());
+                                                                                                LocalDateTime currentDate = LocalDateTime.now();
+                                                                                                DateTimeFormatter formatForDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                                                                                                Match match = new Match(currentDate.format(formatForDate), matchService.fetchDateTimeForMatch(), document4.get(USERNAME).toString(), document.get(USERNAME).toString());
                                                                                                 groupRepo.registerMatch(currentGroup.getId(), match);
                                                                                                 finish();
                                                                                                 Intent i = new Intent(CurrentGroup.this, CurrentGroup.class);
@@ -271,6 +279,21 @@ public class CurrentGroup extends AppCompatActivity {
             public void onClick(View v) {
                 Intent leaderBoardPage = new Intent(CurrentGroup.this, CurrentGroupLeaderboard.class);
                 startActivity(leaderBoardPage);
+            }
+        });
+
+        myMatchesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent matchesPage = new Intent(CurrentGroup.this, CurrentGroupMatches.class);
+                startActivity(matchesPage);
+            }
+        });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

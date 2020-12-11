@@ -8,7 +8,8 @@ public class Match {
     private String winner;
     private String loser;
 
-    public Match(String matchTime, String winner, String loser) {
+    public Match(String id, String matchTime, String winner, String loser) {
+        this.id = id;
         this.matchTime = matchTime;
         this.winner = winner;
         this.loser = loser;
