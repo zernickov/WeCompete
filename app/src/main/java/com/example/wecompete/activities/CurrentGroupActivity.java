@@ -170,7 +170,7 @@ public class CurrentGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(CurrentGroupActivity.this);
-                builder.setTitle("Invite User");
+                builder.setTitle("Type Username");
                 // Set up the input
                 final EditText input = new EditText(CurrentGroupActivity.this);
                 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
@@ -184,7 +184,7 @@ public class CurrentGroupActivity extends AppCompatActivity {
                         groupRepo.inviteUser(m_Text, currentGroup.getId());
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
