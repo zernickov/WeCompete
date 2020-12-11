@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private UserRepo userRepo = new UserRepo();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private boolean isNotAvailable = true;
+    public final String USERNAME = "username";
+    public final String USERS = "users";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +62,16 @@ public class MainActivity extends AppCompatActivity {
                     username.setError("Please enter your username");
                     username.requestFocus();
                 }
+                else if (userName.length() > 15) {
+                    username.setError("Username must be less than 15 characters");
+                    username.requestFocus();
+                }
                 else if (email.isEmpty() && pwd.isEmpty() && userName.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Fields are empty!", Toast.LENGTH_SHORT).show();
                 }
+
                 else if (isNotAvailable) {
-                    db.collection("users").whereEqualTo("username", userName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    db.collection(USERS).whereEqualTo(USERNAME, userName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
@@ -79,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-                else if (!(email.isEmpty() && pwd.isEmpty() && userName.isEmpty() && isNotAvailable)) {
+                else if (!(email.isEmpty() && pwd.isEmpty() && userName.isEmpty() && isNotAvailable && userName.length() > 15)) {
                     mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
