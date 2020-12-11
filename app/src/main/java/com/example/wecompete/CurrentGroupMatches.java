@@ -52,7 +52,7 @@ public class CurrentGroupMatches extends AppCompatActivity implements Updatable 
 
     @Override
     public void update(Object o) {
-        System.out.println("update() in 'CurrentGroupLeaderboard' is called");
+        System.out.println("update() in 'CurrentGroupMatches' is called");
         // kald på adapters notifyDatasetChange()
         runOnUiThread(()->{
             groupMatchesAdapter.notifyDataSetChanged();

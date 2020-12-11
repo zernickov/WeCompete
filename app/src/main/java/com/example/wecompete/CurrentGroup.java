@@ -24,6 +24,7 @@ import com.example.wecompete.model.Group;
 import com.example.wecompete.model.Match;
 import com.example.wecompete.model.User;
 import com.example.wecompete.repo.GroupRepo;
+import com.example.wecompete.repo.MatchRepo;
 import com.example.wecompete.repo.UserRepo;
 import com.example.wecompete.service.MatchService;
 import com.example.wecompete.service.Updatable;
@@ -51,6 +52,7 @@ public class CurrentGroup extends AppCompatActivity {
     private UserRepo userRepo = new UserRepo();
     private GroupRepo groupRepo = new GroupRepo();
     private MatchService matchService = new MatchService();
+    private MatchRepo matchRepo = new MatchRepo();
     private Button inviteUserBtn;
     private String m_Text = "";
     private Button registerMatchBtn;
@@ -178,68 +180,11 @@ public class CurrentGroup extends AppCompatActivity {
                                 dialog.cancel();
                             }
                         });
-                        builderInner.setPositiveButton("I Won", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //m_Text = input.getText().toString();
-                                //groupRepo.updateNewElo(mFirebaseAuth.getUid(), m_Text, currentGroup.getId(), "1200", "800");
-                                db.collection(USERS).whereEqualTo(USERNAME, m_Text).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                DocumentReference ref = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(document.getId());
-                                                ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task2) {
-                                                        if (task2.isSuccessful()) {
-                                                            DocumentSnapshot document2 = task2.getResult();
-                                                            if (document2.exists()) {
-                                                                float opponentELOFloat = Float.parseFloat(document2.get(ELO).toString());
-                                                                DocumentReference docRef2 = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(mFirebaseAuth.getUid());
-                                                                docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task3) {
-                                                                        if (task3.isSuccessful()) {
-                                                                            DocumentSnapshot document3 = task3.getResult();
-                                                                            if (document3.exists()) {
-                                                                                float myELOFloat = Float.parseFloat(document3.get(ELO).toString());
-                                                                                matchService.EloRating(myELOFloat, opponentELOFloat, 30, true, mFirebaseAuth.getUid(), m_Text, currentGroup.getId());
-                                                                                DocumentReference docRef3 = db.collection(USERS).document(mFirebaseAuth.getUid());
-                                                                                docRef3.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                                                    @RequiresApi(api = Build.VERSION_CODES.O)
-                                                                                    @Override
-                                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task4) {
-                                                                                        if (task4.isSuccessful()) {
-                                                                                            DocumentSnapshot document4 = task4.getResult();
-                                                                                            if (document4.exists()) {
-                                                                                                LocalDateTime currentDate = LocalDateTime.now();
-                                                                                                DateTimeFormatter formatForDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-                                                                                                Match match = new Match(currentDate.format(formatForDate), matchService.fetchDateTimeForMatch(), document4.get(USERNAME).toString(), document.get(USERNAME).toString());
-                                                                                                groupRepo.registerMatch(currentGroup.getId(), match);
-                                                                                                finish();
-                                                                                                Intent i = new Intent(CurrentGroup.this, CurrentGroup.class);
-                                                                                                startActivity(i);
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                });
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                });
-                                                            }
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                        builderInner.show();
+
+                        matchRepo.declareMatchResult(builderInner, m_Text, currentGroup, mFirebaseAuth, CurrentGroup.this);
+
                     }
+
                 });
                         builder.show();
                     }
@@ -296,6 +241,8 @@ public class CurrentGroup extends AppCompatActivity {
                 finish();
             }
         });
+
+
 
     }
 }

@@ -44,10 +44,12 @@ public class GroupMatchesAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.my_matches_row, null);
         }
-        TextView textView = convertView.findViewById(R.id.myMatchesRowTextView);
-        textView.setText(data.get(position).getMatchTime());
-        TextView textView2 = convertView.findViewById(R.id.myMatchesRowTextView5);
-        textView2.setText(data.get(position).getLoser());
+        TextView matchTime = convertView.findViewById(R.id.myMatchesTimeTextView);
+        TextView matchWinnerName = convertView.findViewById(R.id.myMatchesWinnerNameTextView);
+        TextView matchLoserName = convertView.findViewById(R.id.myMatchesLoserNameTextView);
+        matchTime.setText(data.get(position).getMatchTime());
+        matchWinnerName.setText(data.get(position).getWinner());
+        matchLoserName.setText(data.get(position).getLoser());
         //ImageView imageView = convertView.findViewById(R.id.myImageView);
         //imageView.setImageResource(images[position]);
         return convertView;

@@ -1,33 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="68dp"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="88dp"
     android:background="@drawable/round_corners">
 
+    <TextView
+        android:id="@+id/myMatchesTimeTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textColor="#8E8D8D"
+        android:textSize="18sp" />
+
     <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="68dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="205dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/round_corners">
 
         <TextView
-            android:id="@+id/myMatchesRowTextView"
-            android:layout_width="290dp"
+            android:id="@+id/myMatchesWinnerTextView"
+            android:layout_width="205dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
-            android:text="TextView"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/myMatchesRowTextView5"
-            android:layout_width="290dp"
-            android:layout_height="wrap_content"
-            android:text="TextView"
+            android:text=" Winner🏆"
             android:textAlignment="center"
             android:textColor="#FF9800"
             android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/myMatchesWinnerNameTextView"
+            android:layout_width="205dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="#FF9800"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="205dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_corners">
+
+        <TextView
+            android:id="@+id/myMatchesLoserTextView"
+            android:layout_width="205dp"
+            android:layout_height="wrap_content"
+
+            android:text="Loser"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/myMatchesLoserNameTextView"
+            android:layout_width="205dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+
 
 </LinearLayout>
