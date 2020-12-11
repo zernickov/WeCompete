@@ -69,12 +69,7 @@ public class MatchRepo {
         });
     }
 
-    public void declareMatchResult(AlertDialog.Builder builderInner, String m_Text, Group currentGroup, FirebaseAuth mFirebaseAuth, Context currentGroupActivity) {
-        builderInner.setPositiveButton("I Won", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //m_Text = input.getText().toString();
-                //groupRepo.updateNewElo(mFirebaseAuth.getUid(), m_Text, currentGroup.getId(), "1200", "800");
+    public void declareMatchResult(String m_Text, Group currentGroup, FirebaseAuth mFirebaseAuth, Context currentGroupActivity) {
                 db.collection(USERS).whereEqualTo(USERNAME, m_Text).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -129,9 +124,6 @@ public class MatchRepo {
                         }
                     }
                 });
-            }
-        });
-        builderInner.show();
     }
 
 

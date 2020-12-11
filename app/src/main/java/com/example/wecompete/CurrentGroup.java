@@ -180,8 +180,15 @@ public class CurrentGroup extends AppCompatActivity {
                                 dialog.cancel();
                             }
                         });
+                        builderInner.setPositiveButton("I Won", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroup.this);
+                                    }
+                                });
+                        builderInner.show();
 
-                        matchRepo.declareMatchResult(builderInner, m_Text, currentGroup, mFirebaseAuth, CurrentGroup.this);
+
 
                     }
 
