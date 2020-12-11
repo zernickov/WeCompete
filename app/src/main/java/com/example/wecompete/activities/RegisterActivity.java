@@ -1,4 +1,4 @@
-package com.example.wecompete;
+package com.example.wecompete.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.wecompete.R;
 import com.example.wecompete.model.User;
 import com.example.wecompete.repo.UserRepo;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,10 +19,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class MainActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
     public EditText emailId, password, username;
     public Button btnSignUp;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_register);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         username = findViewById(R.id.editTextTextUsername);
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                     username.requestFocus();
                 }
                 else if (email.isEmpty() && pwd.isEmpty() && userName.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Fields are empty!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Fields are empty!", Toast.LENGTH_SHORT).show();
                 }
 
                 else if (isNotAvailable) {
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 boolean isEmpty = task.getResult().isEmpty();
                                 if (!isEmpty) {
-                                    Toast.makeText(MainActivity.this, "Username already taken!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RegisterActivity.this, "Username already taken!", Toast.LENGTH_SHORT).show();
                                 }
                                 else {
                                     isNotAvailable = false;
@@ -87,31 +87,31 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
                 else if (!(email.isEmpty() && pwd.isEmpty() && userName.isEmpty() && isNotAvailable && userName.length() > 15)) {
-                    mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                    mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "Sign Up Unsuccessful, Please Try Again", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Sign Up Unsuccessful, Please Try Again", Toast.LENGTH_SHORT).show();
                             }
                             else {
                                 //todo evt. ret efter video
                                 User user = new User(userName, mFirebaseAuth.getUid());
                                 userRepo.addUsername(user);
-                                Intent successful = new Intent(MainActivity.this, HomeActivity.class);
+                                Intent successful = new Intent(RegisterActivity.this, HomeActivity.class);
                                 startActivity(successful);
                             }
                         }
                     });
                 }
                 else {
-                    Toast.makeText(MainActivity.this, "Error Occurred!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Error Occurred!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
         tvSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent loginView = new Intent(MainActivity.this, LoginActivity.class);
+                Intent loginView = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(loginView);
             }
         });

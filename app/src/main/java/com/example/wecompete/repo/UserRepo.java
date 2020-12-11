@@ -1,24 +1,18 @@
 package com.example.wecompete.repo;
 
-import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.example.wecompete.model.Group;
 import com.example.wecompete.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static android.content.ContentValues.TAG;
 
 public class UserRepo {
 
@@ -27,7 +21,6 @@ public class UserRepo {
     public final String GROUPS = "groups";
     public final String USERNAME = "username";
     public final String GROUP_PROFILES = "groupprofiles";
-    public final String USER_PROFILES = "userprofile";
 
     public void addUsername(User user) {
         DocumentReference ref = db.collection(USERS).document(user.getId()); //opret nyt dokument i Firebase hvor vi selv angiver document id
@@ -70,7 +63,6 @@ public class UserRepo {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         textView.setText(document.get("ELO").toString());
-                        //myUsernameTextView.setText(document.get("ELO").toString());
                     } else {
                         System.out.println("No such document");
                     }

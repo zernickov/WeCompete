@@ -1,16 +1,14 @@
-package com.example.wecompete;
+package com.example.wecompete.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.wecompete.R;
 import com.example.wecompete.model.Group;
-import com.example.wecompete.model.User;
 import com.example.wecompete.repo.GroupRepo;
 import com.google.firebase.auth.FirebaseAuth;
 

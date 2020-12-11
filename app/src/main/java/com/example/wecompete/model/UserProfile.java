@@ -8,10 +8,6 @@ public class UserProfile {
         this.id = id;
     }
 
-    public UserProfile() {
-
-    }
-
     public String getId() {
         return id;
     }

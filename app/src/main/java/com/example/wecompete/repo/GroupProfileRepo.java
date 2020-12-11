@@ -4,10 +4,9 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import com.example.wecompete.model.Group;
 import com.example.wecompete.model.GroupProfile;
 import com.example.wecompete.service.EloSorter;
-import com.example.wecompete.service.Updatable;
+import com.example.wecompete.adapters.Updatable;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -19,10 +18,7 @@ public class GroupProfileRepo {
     private List<GroupProfile> groupProfilesList = new ArrayList<>(); //gemmer Note objekter. Kan opdateres.
     private Updatable activity;
     public final String GROUPS = "groups";
-    public final String GROUP_NAME = "name";
     public final String GROUP_PROFILES = "groupprofiles";
-    public final String USER_PROFILES = "userprofile";
-    public final String USERNAME = "username";
     public final String ELO = "ELO";
     public final String GROUP_USERNAME = "groupusername";
 

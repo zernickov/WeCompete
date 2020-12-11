@@ -1,13 +1,11 @@
-package com.example.wecompete;
+package com.example.wecompete.activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -19,30 +17,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.wecompete.R;
 import com.example.wecompete.global.Global;
 import com.example.wecompete.model.Group;
-import com.example.wecompete.model.Match;
-import com.example.wecompete.model.User;
 import com.example.wecompete.repo.GroupRepo;
 import com.example.wecompete.repo.MatchRepo;
 import com.example.wecompete.repo.UserRepo;
-import com.example.wecompete.service.MatchService;
-import com.example.wecompete.service.Updatable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
-public class CurrentGroup extends AppCompatActivity {
+public class CurrentGroupActivity extends AppCompatActivity {
 
     private Group currentGroup;
     private TextView currentGroupNameTextView;
@@ -51,30 +39,16 @@ public class CurrentGroup extends AppCompatActivity {
     public FirebaseAuth mFirebaseAuth;
     private UserRepo userRepo = new UserRepo();
     private GroupRepo groupRepo = new GroupRepo();
-    private MatchService matchService = new MatchService();
     private MatchRepo matchRepo = new MatchRepo();
     private Button inviteUserBtn;
     private String m_Text = "";
     private Button registerMatchBtn;
     private ImageView myRankIcon;
-
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     public final String GROUPS = "groups";
-    public final String GROUP_NAME = "name";
     public final String GROUP_PROFILES = "groupprofiles";
-    public final String USER_PROFILES = "userprofile";
-    public final String USERNAME = "username";
     public final String ELO = "ELO";
-    public final String WINNER = "winner";
-    public final String LOSER = "loser";
-    public final String MATCH_TIME = "matchtime";
     public final String GROUP_USERNAME = "groupusername";
-    public final String MATCHES = "matches";
-    private User user = new User();
-    public final String USERS = "users";
-    private String inviteUserResult;
-    private List<Group> groupList = new ArrayList<>(); //gemmer Note objekter. Kan opdateres.
-    private Updatable activity;
     private Button myLeaderBoardBtn;
     private Button myMatchesBtn;
     private Button backBtn;
@@ -136,14 +110,9 @@ public class CurrentGroup extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //create AlertDialog boks
-                AlertDialog.Builder builder = new AlertDialog.Builder(CurrentGroup.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(CurrentGroupActivity.this);
                 builder.setTitle("Choose Opponent");
-                // Set up the input
-                //final EditText input = new EditText(CurrentGroup.this);
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                //input.setInputType(InputType.TYPE_CLASS_TEXT);
-                //builder.setView(input);
-                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(CurrentGroup.this, android.R.layout.select_dialog_singlechoice);
+                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(CurrentGroupActivity.this, android.R.layout.select_dialog_singlechoice);
                 db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).addSnapshotListener((value, error) -> {
                     arrayAdapter.clear();
                     for (DocumentSnapshot snap: value.getDocuments()) {
@@ -165,7 +134,7 @@ public class CurrentGroup extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String m_Text = arrayAdapter.getItem(which);
-                        AlertDialog.Builder builderInner = new AlertDialog.Builder(CurrentGroup.this);
+                        AlertDialog.Builder builderInner = new AlertDialog.Builder(CurrentGroupActivity.this);
                         builderInner.setMessage(m_Text);
                         builderInner.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
@@ -176,13 +145,13 @@ public class CurrentGroup extends AppCompatActivity {
                         builderInner.setNegativeButton("I Lost", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroup.this, false);
+                                matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroupActivity.this, false);
                             }
                         });
                         builderInner.setPositiveButton("I Won", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroup.this, true);
+                                        matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroupActivity.this, true);
                                     }
                                 });
                         builderInner.show();
@@ -200,10 +169,10 @@ public class CurrentGroup extends AppCompatActivity {
         inviteUserBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(CurrentGroup.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(CurrentGroupActivity.this);
                 builder.setTitle("Invite User");
                 // Set up the input
-                final EditText input = new EditText(CurrentGroup.this);
+                final EditText input = new EditText(CurrentGroupActivity.this);
                 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 builder.setView(input);
@@ -228,7 +197,7 @@ public class CurrentGroup extends AppCompatActivity {
         myLeaderBoardBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent leaderBoardPage = new Intent(CurrentGroup.this, CurrentGroupLeaderboard.class);
+                Intent leaderBoardPage = new Intent(CurrentGroupActivity.this, CurrentGroupLeaderboardActivity.class);
                 startActivity(leaderBoardPage);
             }
         });
@@ -236,7 +205,7 @@ public class CurrentGroup extends AppCompatActivity {
         myMatchesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent matchesPage = new Intent(CurrentGroup.this, CurrentGroupMatches.class);
+                Intent matchesPage = new Intent(CurrentGroupActivity.this, CurrentGroupMatchesActivity.class);
                 startActivity(matchesPage);
             }
         });

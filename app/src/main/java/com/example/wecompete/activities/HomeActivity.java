@@ -1,4 +1,4 @@
-package com.example.wecompete;
+package com.example.wecompete.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,11 +9,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.wecompete.R;
 import com.example.wecompete.global.Global;
 import com.example.wecompete.repo.GroupRepo;
 import com.example.wecompete.repo.UserRepo;
-import com.example.wecompete.service.MyGroupsAdapter;
-import com.example.wecompete.service.Updatable;
+import com.example.wecompete.adapters.MyGroupsAdapter;
+import com.example.wecompete.adapters.Updatable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -22,7 +23,6 @@ public class HomeActivity extends AppCompatActivity implements Updatable {
     public Button btnLogout;
     public Button btnNewGroup;
     public FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
     private TextView myUsernameTextView;
     private UserRepo userRepo = new UserRepo();
     private GroupRepo groupRepo = new GroupRepo();
@@ -46,7 +46,7 @@ public class HomeActivity extends AppCompatActivity implements Updatable {
         userRepo.showUsername(myUsernameTextView, mFirebaseAuth.getUid());
         myGroupListView.setAdapter(myGroupsAdapter);
         myGroupListView.setOnItemClickListener((_listView, linearLayour, adapterPs, arrPos) -> {
-            Intent intent = new Intent(this, CurrentGroup.class);
+            Intent intent = new Intent(this, CurrentGroupActivity.class);
             Global.map.put(Global.GROUP_KEY, groupRepo.myGroups().get((int)arrPos));
             // som kan hentes på den anden side.
             startActivity(intent);

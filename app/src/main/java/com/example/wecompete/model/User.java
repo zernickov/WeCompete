@@ -1,6 +1,5 @@
 package com.example.wecompete.model;
 
-import java.util.UUID;
 
 public class User {
     private String username;
@@ -9,10 +8,6 @@ public class User {
     public User(String username, String id) {
         this.username = username;
         this.id = id;
-    }
-
-    public User(){
-
     }
 
     public String getUsername() {

@@ -1,4 +1,4 @@
-package com.example.wecompete.service;
+package com.example.wecompete.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,15 +9,14 @@ import android.widget.TextView;
 
 import com.example.wecompete.R;
 import com.example.wecompete.model.Group;
-import com.example.wecompete.model.Match;
 
 import java.util.List;
 
-public class GroupMatchesAdapter extends BaseAdapter {
-    private List<Match> data;
+public class MyGroupsAdapter extends BaseAdapter {
+    private List<Group> data;
     private LayoutInflater layoutInflater;
 
-    public GroupMatchesAdapter(Context context, List<Match> data) {
+    public MyGroupsAdapter(Context context, List<Group> data) {
         this.data = data;
         //from er en statisk metode
         layoutInflater = LayoutInflater.from(context);
@@ -42,16 +41,10 @@ public class GroupMatchesAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.my_matches_row, null);
+            convertView = layoutInflater.inflate(R.layout.my_group_row, null);
         }
-        TextView matchTime = convertView.findViewById(R.id.myMatchesTimeTextView);
-        TextView matchWinnerName = convertView.findViewById(R.id.myMatchesWinnerNameTextView);
-        TextView matchLoserName = convertView.findViewById(R.id.myMatchesLoserNameTextView);
-        matchTime.setText(data.get(position).getMatchTime());
-        matchWinnerName.setText(data.get(position).getWinner());
-        matchLoserName.setText(data.get(position).getLoser());
-        //ImageView imageView = convertView.findViewById(R.id.myImageView);
-        //imageView.setImageResource(images[position]);
+        TextView textView = convertView.findViewById(R.id.myLeaderboardRowTextView);
+        textView.setText(data.get(position).getGroupName());
         return convertView;
     }
 }

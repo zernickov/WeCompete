@@ -1,4 +1,4 @@
-package com.example.wecompete;
+package com.example.wecompete.activities;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,15 +9,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.wecompete.R;
 import com.example.wecompete.global.Global;
 import com.example.wecompete.model.Group;
-import com.example.wecompete.repo.GroupProfileRepo;
 import com.example.wecompete.repo.MatchRepo;
-import com.example.wecompete.service.GroupMatchesAdapter;
-import com.example.wecompete.service.MyLeaderboardAdapter;
-import com.example.wecompete.service.Updatable;
+import com.example.wecompete.adapters.GroupMatchesAdapter;
+import com.example.wecompete.adapters.Updatable;
 
-public class CurrentGroupMatches extends AppCompatActivity implements Updatable {
+public class CurrentGroupMatchesActivity extends AppCompatActivity implements Updatable {
 
 
     private MatchRepo matchRepo = new MatchRepo();

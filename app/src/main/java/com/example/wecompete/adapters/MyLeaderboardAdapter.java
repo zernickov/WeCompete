@@ -1,4 +1,4 @@
-package com.example.wecompete.service;
+package com.example.wecompete.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -63,8 +63,6 @@ public class MyLeaderboardAdapter extends BaseAdapter {
         } else if (myELOFloatForRankIcon >= 1500) {
             rankIcon.setImageResource(R.drawable.wecompeteplatinumwithouttext);
         }
-        //ImageView imageView = convertView.findViewById(R.id.myImageView);
-        //imageView.setImageResource(images[position]);
         return convertView;
     }
 }

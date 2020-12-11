@@ -6,32 +6,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.example.wecompete.model.Group;
-import com.example.wecompete.model.GroupProfile;
 import com.example.wecompete.model.Match;
-import com.example.wecompete.model.User;
-import com.example.wecompete.model.UserProfile;
 
-import com.example.wecompete.service.Updatable;
+import com.example.wecompete.adapters.Updatable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class GroupRepo {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    //private Group group = new Group();
     public final String GROUPS = "groups";
     public final String GROUP_NAME = "name";
     public final String GROUP_PROFILES = "groupprofiles";
@@ -43,9 +35,7 @@ public class GroupRepo {
     public final String MATCH_TIME = "matchtime";
     public final String MATCHES = "matches";
     public final String GROUP_USERNAME = "groupusername";
-    private User user = new User();
     public final String USERS = "users";
-    private String inviteUserResult;
     private List<Group> groupList = new ArrayList<>(); //gemmer Note objekter. Kan opdateres.
     private Updatable activity;
 

@@ -12,9 +12,6 @@ public class GroupProfile {
         this.id = id;
     }
 
-    public GroupProfile(){
-
-    }
 
     public String getGroupUsername() {
         return groupUsername;

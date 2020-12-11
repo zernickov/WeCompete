@@ -2,22 +2,17 @@ package com.example.wecompete.repo;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 
-import com.example.wecompete.CurrentGroup;
+import com.example.wecompete.activities.CurrentGroupActivity;
 import com.example.wecompete.model.Group;
-import com.example.wecompete.model.GroupProfile;
 import com.example.wecompete.model.Match;
-import com.example.wecompete.model.User;
-import com.example.wecompete.service.EloSorter;
 import com.example.wecompete.service.MatchService;
-import com.example.wecompete.service.Updatable;
+import com.example.wecompete.adapters.Updatable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -110,7 +105,7 @@ public class MatchRepo {
                                                                                     groupRepo.registerMatch(currentGroup.getId(), match);
                                                                                 }
                                                                                 ((Activity) currentGroupActivity).finish();
-                                                                                Intent i = new Intent(currentGroupActivity, CurrentGroup.class);
+                                                                                Intent i = new Intent(currentGroupActivity, CurrentGroupActivity.class);
                                                                                 currentGroupActivity.startActivity(i);
 
                                                                             }
