@@ -12,6 +12,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,9 +34,9 @@ public class UserRepo {
         System.out.println("addUsername kaldet " + ref);
         Map<String, String> map = new HashMap<>();
         map.put(USERNAME, user.getUsername()); //tilføj selv flere key-value par efter behov
-        ref.set(map).addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                System.out.println("error i gem: " +task.getException());
+        ref.set(map).addOnCompleteListener(task2 -> {
+            if (!task2.isSuccessful()) {
+                System.out.println("error i gem: " +task2.getException());
             }
         }); //gemmer hele map i aktuelt dokument
     }

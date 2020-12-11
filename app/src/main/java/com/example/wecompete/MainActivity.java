@@ -17,6 +17,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
     public TextView tvSignIn;
     public FirebaseAuth mFirebaseAuth;
     private UserRepo userRepo = new UserRepo();
-
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private boolean isNotAvailable = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +62,24 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else if (email.isEmpty() && pwd.isEmpty() && userName.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Fields are empty!", Toast.LENGTH_SHORT).show();
-
                 }
-                else if (!(email.isEmpty() && pwd.isEmpty() && userName.isEmpty())) {
+                else if (isNotAvailable) {
+                    db.collection("users").whereEqualTo("username", userName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                boolean isEmpty = task.getResult().isEmpty();
+                                if (!isEmpty) {
+                                    Toast.makeText(MainActivity.this, "Username already taken!", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    isNotAvailable = false;
+                                }
+                            }
+                        }
+                    });
+                }
+                else if (!(email.isEmpty() && pwd.isEmpty() && userName.isEmpty() && isNotAvailable)) {
                     mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
