@@ -69,7 +69,7 @@ public class MatchRepo {
         });
     }
 
-    public void declareMatchResult(String m_Text, Group currentGroup, FirebaseAuth mFirebaseAuth, Context currentGroupActivity) {
+    public void declareMatchResult(String m_Text, Group currentGroup, FirebaseAuth mFirebaseAuth, Context currentGroupActivity, boolean IWon) {
                 db.collection(USERS).whereEqualTo(USERNAME, m_Text).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -91,7 +91,7 @@ public class MatchRepo {
                                                             DocumentSnapshot document3 = task3.getResult();
                                                             if (document3.exists()) {
                                                                 float myELOFloat = Float.parseFloat(document3.get(ELO).toString());
-                                                                matchService.EloRating(myELOFloat, opponentELOFloat, 30, true, mFirebaseAuth.getUid(), m_Text, currentGroup.getId());
+                                                                matchService.EloRating(myELOFloat, opponentELOFloat, 30, IWon, mFirebaseAuth.getUid(), m_Text, currentGroup.getId());
                                                                 DocumentReference docRef3 = db.collection(USERS).document(mFirebaseAuth.getUid());
                                                                 docRef3.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                                     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -102,8 +102,13 @@ public class MatchRepo {
                                                                             if (document4.exists()) {
                                                                                 LocalDateTime currentDate = LocalDateTime.now();
                                                                                 DateTimeFormatter formatForDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-                                                                                Match match = new Match(currentDate.format(formatForDate), matchService.fetchDateTimeForMatch(), document4.get(USERNAME).toString(), document.get(USERNAME).toString());
-                                                                                groupRepo.registerMatch(currentGroup.getId(), match);
+                                                                                if (IWon) {
+                                                                                    Match match = new Match(currentDate.format(formatForDate), matchService.fetchDateTimeForMatch(), document4.get(USERNAME).toString(), document.get(USERNAME).toString());
+                                                                                    groupRepo.registerMatch(currentGroup.getId(), match);
+                                                                                } else if (!IWon) {
+                                                                                    Match match = new Match(currentDate.format(formatForDate), matchService.fetchDateTimeForMatch(), document.get(USERNAME).toString(), document4.get(USERNAME).toString());
+                                                                                    groupRepo.registerMatch(currentGroup.getId(), match);
+                                                                                }
                                                                                 ((Activity) currentGroupActivity).finish();
                                                                                 Intent i = new Intent(currentGroupActivity, CurrentGroup.class);
                                                                                 currentGroupActivity.startActivity(i);

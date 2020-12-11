@@ -176,14 +176,13 @@ public class CurrentGroup extends AppCompatActivity {
                         builderInner.setNegativeButton("I Lost", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //m_Text = input.getText().toString();
-                                dialog.cancel();
+                                matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroup.this, false);
                             }
                         });
                         builderInner.setPositiveButton("I Won", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroup.this);
+                                        matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroup.this, true);
                                     }
                                 });
                         builderInner.show();
