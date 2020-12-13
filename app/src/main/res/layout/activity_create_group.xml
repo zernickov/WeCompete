@@ -98,7 +98,7 @@
         android:layout_width="269dp"
         android:layout_height="76dp"
         android:layout_marginTop="5dp"
-        android:text="Once you have entered your group by clicking on it from your homepage, you will find the 'add user' button in the top right corner of the page"
+        android:text="Once you have entered your group by clicking on it from your homepage, you will find the 'Invite' button in the top right corner of the page"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
