@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -53,23 +52,15 @@ public class HomeActivity extends AppCompatActivity implements Updatable {
         });
         groupRepo.setActivity(this, mFirebaseAuth.getUid());
 
-
-
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intToSignIn = new Intent(HomeActivity.this, LoginActivity.class);
-                startActivity(intToSignIn);
-            }
+        btnLogout.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intToSignIn = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(intToSignIn);
         });
 
-        btnNewGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent createGrpPage = new Intent(HomeActivity.this, CreateGroupActivity.class);
-                startActivity(createGrpPage);
-            }
+        btnNewGroup.setOnClickListener(v -> {
+            Intent createGrpPage = new Intent(HomeActivity.this, CreateGroupActivity.class);
+            startActivity(createGrpPage);
         });
     }
 
@@ -77,9 +68,7 @@ public class HomeActivity extends AppCompatActivity implements Updatable {
     public void update(Object o) { //bliver kaldet fra en background thread
         System.out.println("update() er kaldet");
         // kald på adapters notifyDatasetChange()
-        runOnUiThread(()->{
-            myGroupsAdapter.notifyDataSetChanged();
-        });
+        runOnUiThread(()-> myGroupsAdapter.notifyDataSetChanged());
     }
 
 }

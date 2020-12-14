@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -40,12 +39,7 @@ public class CurrentGroupLeaderboardActivity extends AppCompatActivity implement
         myLeaderboardListView.setAdapter(myLeaderboardAdapter);
         groupProfileRepo.setActivity(this, currentGroup.getId());
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        backBtn.setOnClickListener(v -> finish());
 
 
 
@@ -55,8 +49,6 @@ public class CurrentGroupLeaderboardActivity extends AppCompatActivity implement
     public void update(Object o) {
         System.out.println("update() in 'CurrentGroupLeaderboard' is called");
         // kald på adapters notifyDatasetChange()
-        runOnUiThread(()->{
-            myLeaderboardAdapter.notifyDataSetChanged();
-        });
+        runOnUiThread(()-> myLeaderboardAdapter.notifyDataSetChanged());
     }
 }

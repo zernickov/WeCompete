@@ -2,20 +2,16 @@ package com.example.wecompete.repo;
 
 import android.os.Build;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.example.wecompete.model.Group;
 import com.example.wecompete.model.Match;
 
 import com.example.wecompete.adapters.Updatable;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,30 +74,27 @@ public class GroupRepo {
     }
 
     public void inviteUser(String userInput, String groupID) {
-        db.collection(USERS).whereEqualTo(USERNAME, userInput).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        document.getId();
-                        DocumentReference ref = db.collection(USERS).document(document.getId()).collection(USER_PROFILES).document(groupID);
-                        Map<String, String> colMap2 = new HashMap<>();
-                        colMap2.put("VALUE", "null");
-                        ref.set(colMap2).addOnCompleteListener(task2 -> {
-                            if (!task2.isSuccessful()){
-                                System.out.println("error i opret collection groupprofiles: " + task2.getException());
-                            }
-                        });
-                        DocumentReference ref2 = db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).document(document.getId());
-                        Map<String, String> colMap = new HashMap<>();
-                        colMap.put(ELO, "1000");
-                        colMap.put(GROUP_USERNAME, userInput);
-                        ref2.set(colMap).addOnCompleteListener(task3 -> {
-                            if (!task3.isSuccessful()){
-                                System.out.println("error i opret collection groupprofiles: " + task3.getException());
-                            }
-                        });
-                    }
+        db.collection(USERS).whereEqualTo(USERNAME, userInput).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    document.getId();
+                    DocumentReference ref = db.collection(USERS).document(document.getId()).collection(USER_PROFILES).document(groupID);
+                    Map<String, String> colMap2 = new HashMap<>();
+                    colMap2.put("VALUE", "null");
+                    ref.set(colMap2).addOnCompleteListener(task2 -> {
+                        if (!task2.isSuccessful()){
+                            System.out.println("error i opret collection groupprofiles: " + task2.getException());
+                        }
+                    });
+                    DocumentReference ref2 = db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).document(document.getId());
+                    Map<String, String> colMap = new HashMap<>();
+                    colMap.put(ELO, "1000");
+                    colMap.put(GROUP_USERNAME, userInput);
+                    ref2.set(colMap).addOnCompleteListener(task3 -> {
+                        if (!task3.isSuccessful()){
+                            System.out.println("error i opret collection groupprofiles: " + task3.getException());
+                        }
+                    });
                 }
             }
         });
@@ -136,14 +129,11 @@ public class GroupRepo {
     }
 
     public void updateNewElo(String userID, String userInput, String groupID, String myNewElo, String newEloOpponent) {
-        db.collection(USERS).whereEqualTo(USERNAME, userInput).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        DocumentReference ref = db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).document(document.getId());
-                        ref.update(ELO, newEloOpponent);
-                    }
+        db.collection(USERS).whereEqualTo(USERNAME, userInput).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    DocumentReference ref = db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).document(document.getId());
+                    ref.update(ELO, newEloOpponent);
                 }
             }
         });

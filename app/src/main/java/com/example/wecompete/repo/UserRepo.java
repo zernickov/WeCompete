@@ -2,11 +2,8 @@ package com.example.wecompete.repo;
 
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 
 import com.example.wecompete.model.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,39 +33,33 @@ public class UserRepo {
 
     public void showUsername(TextView textView, String userID) {
         DocumentReference docRef = db.collection("users").document(userID);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        textView.setText(document.get("username").toString());
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    textView.setText(document.get(USERNAME).toString());
 
-                    } else {
-                        System.out.println("No such document");
-                    }
                 } else {
-                    System.out.println("get failed with "+ task.getException());
+                    System.out.println("No such document");
                 }
+            } else {
+                System.out.println("get failed with "+ task.getException());
             }
         });
     }
 
     public void showELO(TextView textView, String groupID, String userID) {
         DocumentReference docRef2 = db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).document(userID);
-        docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        textView.setText(document.get("ELO").toString());
-                    } else {
-                        System.out.println("No such document");
-                    }
+        docRef2.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    textView.setText(document.get("ELO").toString());
                 } else {
-                    System.out.println("get failed with "+ task.getException());
+                    System.out.println("No such document");
                 }
+            } else {
+                System.out.println("get failed with "+ task.getException());
             }
         });
     }

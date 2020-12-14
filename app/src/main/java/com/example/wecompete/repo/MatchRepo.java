@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.example.wecompete.activities.CurrentGroupActivity;
@@ -13,14 +12,11 @@ import com.example.wecompete.model.Group;
 import com.example.wecompete.model.Match;
 import com.example.wecompete.service.MatchService;
 import com.example.wecompete.adapters.Updatable;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -64,63 +60,50 @@ public class MatchRepo {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void declareMatchResult(String m_Text, Group currentGroup, FirebaseAuth mFirebaseAuth, Context currentGroupActivity, boolean IWon) {
-                db.collection(USERS).whereEqualTo(USERNAME, m_Text).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                DocumentReference ref = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(document.getId());
-                                ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task2) {
-                                        if (task2.isSuccessful()) {
-                                            DocumentSnapshot document2 = task2.getResult();
-                                            if (document2.exists()) {
-                                                float opponentELOFloat = Float.parseFloat(document2.get(ELO).toString());
-                                                DocumentReference docRef2 = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(mFirebaseAuth.getUid());
-                                                docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task3) {
-                                                        if (task3.isSuccessful()) {
-                                                            DocumentSnapshot document3 = task3.getResult();
-                                                            if (document3.exists()) {
-                                                                float myELOFloat = Float.parseFloat(document3.get(ELO).toString());
-                                                                matchService.EloRating(myELOFloat, opponentELOFloat, 30, IWon, mFirebaseAuth.getUid(), m_Text, currentGroup.getId());
-                                                                DocumentReference docRef3 = db.collection(USERS).document(mFirebaseAuth.getUid());
-                                                                docRef3.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                                    @RequiresApi(api = Build.VERSION_CODES.O)
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task4) {
-                                                                        if (task4.isSuccessful()) {
-                                                                            DocumentSnapshot document4 = task4.getResult();
-                                                                            if (document4.exists()) {
-                                                                                LocalDateTime currentDate = LocalDateTime.now();
-                                                                                DateTimeFormatter formatForDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-                                                                                if (IWon) {
-                                                                                    Match match = new Match(currentDate.format(formatForDate), matchService.fetchDateTimeForMatch(), document4.get(USERNAME).toString(), document.get(USERNAME).toString());
-                                                                                    groupRepo.registerMatch(currentGroup.getId(), match);
-                                                                                } else if (!IWon) {
-                                                                                    Match match = new Match(currentDate.format(formatForDate), matchService.fetchDateTimeForMatch(), document.get(USERNAME).toString(), document4.get(USERNAME).toString());
-                                                                                    groupRepo.registerMatch(currentGroup.getId(), match);
-                                                                                }
-                                                                                ((Activity) currentGroupActivity).finish();
-                                                                                Intent i = new Intent(currentGroupActivity, CurrentGroupActivity.class);
-                                                                                currentGroupActivity.startActivity(i);
-
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                });
+                db.collection(USERS).whereEqualTo(USERNAME, m_Text).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            DocumentReference ref = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(document.getId());
+                            ref.get().addOnCompleteListener(task2 -> {
+                                if (task2.isSuccessful()) {
+                                    DocumentSnapshot document2 = task2.getResult();
+                                    if (document2.exists()) {
+                                        float opponentELOFloat = Float.parseFloat(document2.get(ELO).toString());
+                                        DocumentReference docRef2 = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(mFirebaseAuth.getUid());
+                                        docRef2.get().addOnCompleteListener(task3 -> {
+                                            if (task3.isSuccessful()) {
+                                                DocumentSnapshot document3 = task3.getResult();
+                                                if (document3.exists()) {
+                                                    float myELOFloat = Float.parseFloat(document3.get(ELO).toString());
+                                                    matchService.EloRating(myELOFloat, opponentELOFloat, 30, IWon, mFirebaseAuth.getUid(), m_Text, currentGroup.getId());
+                                                    DocumentReference docRef3 = db.collection(USERS).document(mFirebaseAuth.getUid());
+                                                    docRef3.get().addOnCompleteListener(task4 -> {
+                                                        if (task4.isSuccessful()) {
+                                                            DocumentSnapshot document4 = task4.getResult();
+                                                            if (document4.exists()) {
+                                                                LocalDateTime currentDate = LocalDateTime.now();
+                                                                DateTimeFormatter formatForDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                                                                if (IWon) {
+                                                                    Match match = new Match(currentDate.format(formatForDate), matchService.fetchDateTimeForMatch(), document4.get(USERNAME).toString(), document.get(USERNAME).toString());
+                                                                    groupRepo.registerMatch(currentGroup.getId(), match);
+                                                                } else if (!IWon) {
+                                                                    Match match = new Match(currentDate.format(formatForDate), matchService.fetchDateTimeForMatch(), document.get(USERNAME).toString(), document4.get(USERNAME).toString());
+                                                                    groupRepo.registerMatch(currentGroup.getId(), match);
+                                                                }
+                                                                ((Activity) currentGroupActivity).finish();
+                                                                Intent i = new Intent(currentGroupActivity, CurrentGroupActivity.class);
+                                                                currentGroupActivity.startActivity(i);
                                                             }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                }
                                             }
-                                        }
+                                        });
                                     }
-                                });
-                            }
+                                }
+                            });
                         }
                     }
                 });

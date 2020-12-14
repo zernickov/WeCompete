@@ -1,14 +1,13 @@
 package com.example.wecompete.activities;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
@@ -23,8 +22,6 @@ import com.example.wecompete.model.Group;
 import com.example.wecompete.repo.GroupRepo;
 import com.example.wecompete.repo.MatchRepo;
 import com.example.wecompete.repo.UserRepo;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -53,6 +50,7 @@ public class CurrentGroupActivity extends AppCompatActivity {
     private Button myMatchesBtn;
     private Button backBtn;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,146 +76,81 @@ public class CurrentGroupActivity extends AppCompatActivity {
         Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.picturefadein);
         myRankIcon.startAnimation(myFadeInAnimation); //Set animation to your ImageView
 
-
         DocumentReference docRef2 = db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).document(mFirebaseAuth.getUid());
-        docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        //TODO (logik) sæt i metode i groupprofileService
-                        float myELOFloatForRankIcon = Float.parseFloat(document.get(ELO).toString());
-                        if (myELOFloatForRankIcon < 500) {
-                            myRankIcon.setImageResource(R.drawable.wecompetebronze);
-                        } else if (myELOFloatForRankIcon >= 500 && myELOFloatForRankIcon <= 1000) {
-                            myRankIcon.setImageResource(R.drawable.wecompetesilver);
-                        } else if (myELOFloatForRankIcon > 1000 && myELOFloatForRankIcon < 1500) {
-                            myRankIcon.setImageResource(R.drawable.wecompetegold);
-                        } else if (myELOFloatForRankIcon >= 1500) {
-                            myRankIcon.setImageResource(R.drawable.wecompeteplatinum);
-                        }
+        docRef2.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    //TODO (logik) sæt i metode i groupprofileService
+                    float myELOFloatForRankIcon = Float.parseFloat(document.get(ELO).toString());
+                    if (myELOFloatForRankIcon < 500) {
+                        myRankIcon.setImageResource(R.drawable.wecompetebronze);
+                    } else if (myELOFloatForRankIcon >= 500 && myELOFloatForRankIcon <= 1000) {
+                        myRankIcon.setImageResource(R.drawable.wecompetesilver);
+                    } else if (myELOFloatForRankIcon > 1000 && myELOFloatForRankIcon < 1500) {
+                        myRankIcon.setImageResource(R.drawable.wecompetegold);
+                    } else if (myELOFloatForRankIcon >= 1500) {
+                        myRankIcon.setImageResource(R.drawable.wecompeteplatinum);
                     }
                 }
             }
         });
 
-
-
-
-
-        registerMatchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //create AlertDialog boks
-                AlertDialog.Builder builder = new AlertDialog.Builder(CurrentGroupActivity.this);
-                builder.setTitle("Choose Opponent");
-                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(CurrentGroupActivity.this, android.R.layout.select_dialog_singlechoice);
-                db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).addSnapshotListener((value, error) -> {
-                    arrayAdapter.clear();
-                    for (DocumentSnapshot snap: value.getDocuments()) {
-                        if (!snap.getId().equals(mFirebaseAuth.getUid())) {
-                            arrayAdapter.add(snap.get(GROUP_USERNAME).toString());
-                        }
+        registerMatchBtn.setOnClickListener(v -> {
+            //create AlertDialog boks
+            AlertDialog.Builder builder = new AlertDialog.Builder(CurrentGroupActivity.this);
+            builder.setTitle("Choose Opponent");
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(CurrentGroupActivity.this, android.R.layout.select_dialog_singlechoice);
+            db.collection(GROUPS).document(currentGroup.getId()).collection(GROUP_PROFILES).addSnapshotListener((value, error) -> {
+                arrayAdapter.clear();
+                for (DocumentSnapshot snap: value.getDocuments()) {
+                    if (!snap.getId().equals(mFirebaseAuth.getUid())) {
+                        arrayAdapter.add(snap.get(GROUP_USERNAME).toString());
                     }
-                });
-                // Set up the buttons
-                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                }
+            });
+            // Set up the buttons
+            builder.setNeutralButton("Cancel", (dialog, which) -> dialog.cancel());
 
-
-                builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String m_Text = arrayAdapter.getItem(which);
-                        AlertDialog.Builder builderInner = new AlertDialog.Builder(CurrentGroupActivity.this);
-                        builderInner.setMessage(m_Text);
-                        builderInner.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                        builderInner.setNegativeButton("I Lost", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroupActivity.this, false);
-                            }
-                        });
-                        builderInner.setPositiveButton("I Won", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroupActivity.this, true);
-                                    }
-                                });
-                        builderInner.show();
-
-
-
-                    }
-
-                });
-                        builder.show();
-                    }
-                });
-
-
-        inviteUserBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(CurrentGroupActivity.this);
-                builder.setTitle("Type Username");
-                // Set up the input
-                final EditText input = new EditText(CurrentGroupActivity.this);
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                builder.setView(input);
-                // Set up the buttons
-                builder.setPositiveButton("Invite", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        m_Text = input.getText().toString();
-                        groupRepo.inviteUser(m_Text, currentGroup.getId());
-                    }
-                });
-                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
+            builder.setAdapter(arrayAdapter, (dialog, which) -> {
+                String m_Text = arrayAdapter.getItem(which);
+                AlertDialog.Builder builderInner = new AlertDialog.Builder(CurrentGroupActivity.this);
+                builderInner.setMessage(m_Text);
+                builderInner.setNeutralButton("Cancel", (dialog1, which1) -> dialog1.cancel());
+                builderInner.setNegativeButton("I Lost", (dialog2, which2) -> matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroupActivity.this, false));
+                builderInner.setPositiveButton("I Won", (dialog3, which3) -> matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroupActivity.this, true));
+                builderInner.show();
                 });
                 builder.show();
-            }
+            });
+
+        inviteUserBtn.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(CurrentGroupActivity.this);
+            builder.setTitle("Type Username");
+            // Set up the input
+            final EditText input = new EditText(CurrentGroupActivity.this);
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+            // Set up the buttons
+            builder.setPositiveButton("Invite", (dialog, which) -> {
+                m_Text = input.getText().toString();
+                groupRepo.inviteUser(m_Text, currentGroup.getId());
+            });
+            builder.setNeutralButton("Cancel", (dialog, which) -> dialog.cancel());
+            builder.show();
         });
 
-        myLeaderBoardBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent leaderBoardPage = new Intent(CurrentGroupActivity.this, CurrentGroupLeaderboardActivity.class);
-                startActivity(leaderBoardPage);
-            }
+        myLeaderBoardBtn.setOnClickListener(v -> {
+            Intent leaderBoardPage = new Intent(CurrentGroupActivity.this, CurrentGroupLeaderboardActivity.class);
+            startActivity(leaderBoardPage);
         });
 
-        myMatchesBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent matchesPage = new Intent(CurrentGroupActivity.this, CurrentGroupMatchesActivity.class);
-                startActivity(matchesPage);
-            }
+        myMatchesBtn.setOnClickListener(v -> {
+            Intent matchesPage = new Intent(CurrentGroupActivity.this, CurrentGroupMatchesActivity.class);
+            startActivity(matchesPage);
         });
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-
-
+        backBtn.setOnClickListener(v -> finish());
     }
 }

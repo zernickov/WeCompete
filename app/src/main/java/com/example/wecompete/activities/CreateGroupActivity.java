@@ -3,7 +3,6 @@ package com.example.wecompete.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -29,20 +28,12 @@ public class CreateGroupActivity extends AppCompatActivity {
         confirmBtn = findViewById(R.id.confirmBtn);
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        backBtn.setOnClickListener(v -> finish());
 
-        confirmBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Group group = new Group(groupNameInput.getText().toString());
-                groupRepo.addGroup(group, mFirebaseAuth.getUid());
-                finish();
-            }
+        confirmBtn.setOnClickListener(v -> {
+            Group group = new Group(groupNameInput.getText().toString());
+            groupRepo.addGroup(group, mFirebaseAuth.getUid());
+            finish();
         });
 
     }
