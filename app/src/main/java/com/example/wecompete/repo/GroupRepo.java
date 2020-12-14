@@ -1,11 +1,7 @@
 package com.example.wecompete.repo;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
 
 import com.example.wecompete.model.Group;
-import com.example.wecompete.model.Match;
 
 import com.example.wecompete.adapters.Updatable;
 import com.google.firebase.firestore.DocumentReference;
@@ -26,10 +22,6 @@ public class GroupRepo {
     public final String USER_PROFILES = "userprofile";
     public final String USERNAME = "username";
     public final String ELO = "ELO";
-    public final String WINNER = "winner";
-    public final String LOSER = "loser";
-    public final String MATCH_TIME = "matchtime";
-    public final String MATCHES = "matches";
     public final String GROUP_USERNAME = "groupusername";
     public final String USERS = "users";
     private List<Group> groupList = new ArrayList<>(); //gemmer Note objekter. Kan opdateres.
@@ -109,21 +101,6 @@ public class GroupRepo {
                     groupList.add(group);
                     activity.update(null); // kaldes efter vi har hentet data fra Firebase
                 });
-            }
-        });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void registerMatch(String groupID, Match match) {
-        //opret nyt dokument i Firebase hvor vi selv angiver document id
-        DocumentReference ref = db.collection(GROUPS).document(groupID).collection(MATCHES).document(match.getId());
-        Map<String, String> colMap = new HashMap<>();
-        colMap.put(WINNER, match.getWinner());
-        colMap.put(LOSER, match.getLoser());
-        colMap.put(MATCH_TIME, match.getMatchTime());
-        ref.set(colMap).addOnCompleteListener(task -> {
-            if (!task.isSuccessful()){
-                System.out.println("error i opret collection groupprofiles: " + task.getException());
             }
         });
     }

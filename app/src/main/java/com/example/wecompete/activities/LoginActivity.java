@@ -19,7 +19,6 @@ public class LoginActivity extends AppCompatActivity {
     public Button btnSignIn;
     public TextView tvSignUp;
     public FirebaseAuth mFirebaseAuth;
-
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
 

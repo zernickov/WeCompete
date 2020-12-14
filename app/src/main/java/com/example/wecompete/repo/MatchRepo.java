@@ -22,7 +22,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MatchRepo {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -61,6 +63,21 @@ public class MatchRepo {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
+    public void registerMatch(String groupID, Match match) {
+        //opret nyt dokument i Firebase hvor vi selv angiver document id
+        DocumentReference ref = db.collection(GROUPS).document(groupID).collection(MATCHES).document(match.getId());
+        Map<String, String> colMap = new HashMap<>();
+        colMap.put(WINNER, match.getWinner());
+        colMap.put(LOSER, match.getLoser());
+        colMap.put(MATCH_TIME, match.getMatchTime());
+        ref.set(colMap).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()){
+                System.out.println("error i opret collection groupprofiles: " + task.getException());
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void declareMatchResult(String m_Text, Group currentGroup, FirebaseAuth mFirebaseAuth, Context currentGroupActivity, boolean IWon) {
                 db.collection(USERS).whereEqualTo(USERNAME, m_Text).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -87,10 +104,10 @@ public class MatchRepo {
                                                                 DateTimeFormatter formatForDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
                                                                 if (IWon) {
                                                                     Match match = new Match(currentDate.format(formatForDate), matchService.fetchDateTimeForMatch(), document4.get(USERNAME).toString(), document.get(USERNAME).toString());
-                                                                    groupRepo.registerMatch(currentGroup.getId(), match);
+                                                                    registerMatch(currentGroup.getId(), match);
                                                                 } else if (!IWon) {
                                                                     Match match = new Match(currentDate.format(formatForDate), matchService.fetchDateTimeForMatch(), document.get(USERNAME).toString(), document4.get(USERNAME).toString());
-                                                                    groupRepo.registerMatch(currentGroup.getId(), match);
+                                                                    registerMatch(currentGroup.getId(), match);
                                                                 }
                                                                 ((Activity) currentGroupActivity).finish();
                                                                 Intent i = new Intent(currentGroupActivity, CurrentGroupActivity.class);
