@@ -43,7 +43,7 @@ public class MyGroupsAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.my_group_row, null);
         }
-        TextView textView = convertView.findViewById(R.id.myLeaderboardRowTextView);
+        TextView textView = convertView.findViewById(R.id.myGroupRowTextView);
         textView.setText(data.get(position).getGroupName());
         return convertView;
     }

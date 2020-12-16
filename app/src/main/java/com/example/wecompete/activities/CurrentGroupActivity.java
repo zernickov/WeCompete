@@ -111,14 +111,15 @@ public class CurrentGroupActivity extends AppCompatActivity {
             });
             // Set up the buttons
             builder.setNeutralButton("Cancel", (dialog, which) -> dialog.cancel());
-
             builder.setAdapter(arrayAdapter, (dialog, which) -> {
                 String m_Text = arrayAdapter.getItem(which);
                 AlertDialog.Builder builderInner = new AlertDialog.Builder(CurrentGroupActivity.this);
                 builderInner.setMessage(m_Text);
                 builderInner.setNeutralButton("Cancel", (dialog1, which1) -> dialog1.cancel());
-                builderInner.setNegativeButton("I Lost", (dialog2, which2) -> matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroupActivity.this, false));
-                builderInner.setPositiveButton("I Won", (dialog3, which3) -> matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroupActivity.this, true));
+                builderInner.setNegativeButton("I Lost", (dialog2, which2) ->
+                        matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroupActivity.this, false));
+                builderInner.setPositiveButton("I Won", (dialog3, which3) ->
+                        matchRepo.declareMatchResult(m_Text, currentGroup, mFirebaseAuth, CurrentGroupActivity.this, true));
                 builderInner.show();
                 });
                 builder.show();

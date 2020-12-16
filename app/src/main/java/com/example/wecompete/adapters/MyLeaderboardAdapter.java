@@ -46,7 +46,7 @@ public class MyLeaderboardAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.my_leaderboard_row, null);
         }
-        TextView textView = convertView.findViewById(R.id.myLeaderboardRowTextView);
+        TextView textView = convertView.findViewById(R.id.myGroupRowTextView);
         textView.setText(groupProfileData.get(position).getGroupUsername());
         TextView textView2 = convertView.findViewById(R.id.myLeaderboardRowTextView5);
         textView2.setText(groupProfileData.get(position).getELO());

@@ -35,12 +35,12 @@ public class GroupRepo {
 
     public void addGroup(Group group, String groupProfileID) {
         DocumentReference ref = db.collection(GROUPS).document(group.getId()); //opret nyt dokument i Firebase hvor vi selv angiver document id
-        System.out.println("addGroup kaldet " + ref);
+        System.out.println("addGroup is called " + ref);
         Map<String, String> map = new HashMap<>();
         map.put(GROUP_NAME, group.getGroupName()); //tilføj selv flere key-value par efter behov
         ref.set(map).addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
-                System.out.println("error i gem: " +task.getException());
+                System.out.println("error updating groups collection: " +task.getException());
             }
         });//gemmer hele map i aktuelt dokument
         db.collection(USERS).document(groupProfileID).addSnapshotListener((value, error) -> {
@@ -50,7 +50,7 @@ public class GroupRepo {
             colMap.put(GROUP_USERNAME, value.get(USERNAME).toString());
             documentReference.set(colMap).addOnCompleteListener(task -> {
                 if (!task.isSuccessful()){
-                    System.out.println("error i opret collection groupprofiles: " + task.getException());
+                    System.out.println("error updating groupprofiles collection: " + task.getException());
                 }
             });
         });
@@ -60,7 +60,7 @@ public class GroupRepo {
         colMap2.put("VALUE", "null");
         documentReference2.set(colMap2).addOnCompleteListener(task -> {
             if (!task.isSuccessful()){
-                System.out.println("error i opret collection groupprofiles: " + task.getException());
+                System.out.println("error updating userprofiles collection: " + task.getException());
             }
         });
     }
