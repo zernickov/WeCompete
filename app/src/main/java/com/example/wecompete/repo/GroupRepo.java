@@ -27,12 +27,19 @@ public class GroupRepo {
     private List<Group> groupList = new ArrayList<>(); //gemmer Note objekter. Kan opdateres.
     private Updatable activity;
 
-
+    /**
+     * FORMÅL: at sætte Updatable objektet og kalde startListener metoden, da startListener metoden gør brug af Updatable objektet
+     * BRUG: i onCreate() metoden i HomeActivity.
+     */
     public void setActivity(Updatable a, String userID) { //kaldes fra aktivitet som skal blive opdateret
         activity = a;
         startListener(userID);
     }
 
+    /**
+     * FORMÅL: at tilføje en gruppe til databasen, hvilket indebære at give samme bruger et userprofile dokument og et groupprofile dokument.
+     * BRUG: i onCreate() metoden i CreateGroupActivity klassen
+     */
     public void addGroup(Group group, String groupProfileID) {
         DocumentReference ref = db.collection(GROUPS).document(group.getId()); //opret nyt dokument i Firebase hvor vi selv angiver document id
         System.out.println("addGroup is called " + ref);
@@ -65,6 +72,10 @@ public class GroupRepo {
         });
     }
 
+    /**
+     * FORMÅL: at tilføje en bruger til en gruppe i databasen.
+     * BRUG:i onCreate() metoden i CurrentGroupActivity klassen.
+     */
     public void inviteUser(String userInput, String groupID) {
         db.collection(USERS).whereEqualTo(USERNAME, userInput).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -92,6 +103,10 @@ public class GroupRepo {
         });
     }
 
+    /**
+     * FORMÅL: at populere arraylisten med group objekter.
+     * BRUG: i setActivity() metoden i GroupRepo klassen
+     */
     public void startListener(String userID) { // SnapshotListener den lytter hele tiden
         db.collection(USERS).document(userID).collection(USER_PROFILES).addSnapshotListener((value, error) -> {
             groupList.clear();
@@ -105,6 +120,10 @@ public class GroupRepo {
         });
     }
 
+    /**
+     * FORMÅL: at opdatere en brugers ELO-rating i databasen.
+     * BRUG: i EloRating() metoden i MatchService klassen.
+     */
     public void updateNewElo(String userID, String userInput, String groupID, String myNewElo, String newEloOpponent) {
         db.collection(USERS).whereEqualTo(USERNAME, userInput).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -118,6 +137,10 @@ public class GroupRepo {
         ref2.update(ELO, myNewElo);
     }
 
+    /**
+     * FORMÅL: at returnerer arraylisten med gruppe objekter, som bliver populeret i startListener() metoden.
+     * BRUG: i onCreate() metoden i HomeActivity klassen.
+     */
     public List<Group> myGroups() {
         return groupList;
     }

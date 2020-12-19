@@ -4,6 +4,10 @@ import com.example.wecompete.model.GroupProfile;
 
 import java.util.Comparator;
 
+/**
+ * FORMÅL: at sortere de objekter, som indsættes i en arrayliste
+ * BRUG: i startListener() metoden i GroupProfileRepo klassen.
+ */
 public class EloSorter implements Comparator<GroupProfile> {
 
     @Override

@@ -42,13 +42,20 @@ public class MatchRepo {
     private GroupRepo groupRepo = new GroupRepo();
     private MatchService matchService = new MatchService();
 
-
+    /**
+     * FORMÅL: at sætte Updatable objektet og kalde startListener metoden, da startListener metoden gør brug af Updatable objektet
+     * BRUG: i onCreate() metoden i CurrentGroupMatchesActivity.
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void setActivity(Updatable a, String groupID) { //kaldes fra aktivitet som skal blive opdateret
         activity = a;
         startListener(groupID);
     }
 
+    /**
+     * FORMÅL: at populere arraylisten med match objekter og sortere til den rigtige rækkefølge.
+     * BRUG: i setActivity() metoden i MatchRepo
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void startListener(String groupID) { // SnapshotListener den lytter hele tiden
         db.collection(GROUPS).document(groupID).collection(MATCHES).addSnapshotListener((value, error) -> {
@@ -62,6 +69,10 @@ public class MatchRepo {
         });
     }
 
+    /**
+     * FORMÅL: at oprette en kamp i databasen.
+     * BRUG: i declareMatchResult() metoden i MatchRepo klassen.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void registerMatch(String groupID, Match match) {
         //opret nyt dokument i Firebase hvor vi selv angiver document id
@@ -77,6 +88,10 @@ public class MatchRepo {
         });
     }
 
+    /**
+     * FORMÅL: at deklarere en kamps udfald og bruge deklerationen når ny elo skal udregnes og kampen skal registreres i databasen.
+     * BRUG: i onCreate() metoden i CurrentGroupActivity
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void declareMatchResult(String m_Text, Group currentGroup, FirebaseAuth mFirebaseAuth, Context currentGroupActivity, boolean IWon) {
                 db.collection(USERS).whereEqualTo(USERNAME, m_Text).get().addOnCompleteListener(task -> {
@@ -126,7 +141,10 @@ public class MatchRepo {
                 });
     }
 
-
+    /**
+     * FORMÅL: at returnere den arrayliste, som bliver populeret i startListener() metoden.
+     * BRUG: i onCreate() metoden i CurrentGroupMatchesActivity klassen.
+     */
     public List<Match> groupMatches() {
         return matchesList;
     }

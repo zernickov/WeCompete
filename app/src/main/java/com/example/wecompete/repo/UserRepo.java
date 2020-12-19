@@ -19,6 +19,10 @@ public class UserRepo {
     public final String USERNAME = "username";
     public final String GROUP_PROFILES = "groupprofiles";
 
+    /**
+     * FORMÅL: at tilføje en bruger i cloud firestore
+     * BRUG: i onCreate() metoden i RegisterActivity
+     */
     public void addUsername(User user) {
         DocumentReference ref = db.collection(USERS).document(user.getId()); //opret nyt dokument i Firebase hvor vi selv angiver document id
         System.out.println("addUsername kaldet " + ref);
@@ -31,6 +35,10 @@ public class UserRepo {
         }); //gemmer hele map i aktuelt dokument
     }
 
+    /**
+     * FORMÅL: at erstatte værdien af et TextView objekt med en brugers username
+     * BRUG: i onCreate() metoden i HomeActivity og CurrentGroupActivity.
+     */
     public void showUsername(TextView textView, String userID) {
         DocumentReference docRef = db.collection("users").document(userID);
         docRef.get().addOnCompleteListener(task -> {
@@ -48,6 +56,10 @@ public class UserRepo {
         });
     }
 
+    /**
+     * FORMÅL: at erstatte værdien af et TextView objekt med en profils username
+     * BRUG: i onCreate() metoden i CurrentGroupActivity
+     */
     public void showELO(TextView textView, String groupID, String userID) {
         DocumentReference docRef2 = db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).document(userID);
         docRef2.get().addOnCompleteListener(task -> {

@@ -22,13 +22,20 @@ public class GroupProfileRepo {
     public final String ELO = "ELO";
     public final String GROUP_USERNAME = "groupusername";
 
-
+    /**
+     * FORMÅL: at sætte Updatable objektet og kalde startListener metoden, da startListener metoden gør brug af Updatable objektet
+     * BRUG: i onCreate() metoden i CurrentGroupLeaderboardActivity klassen.
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void setActivity(Updatable a, String groupID) { //kaldes fra aktivitet som skal blive opdateret
         activity = a;
         startListener(groupID);
     }
 
+    /**
+     * FORMÅL: at populere arraylisten med groupprofile objekter og sortere dem i den korrekte rækkefølge.
+     * BRUG: i setActivity() metoden i GroupProfileRepo klassen
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void startListener(String groupID) { // SnapshotListener den lytter hele tiden
         db.collection(GROUPS).document(groupID).collection(GROUP_PROFILES).addSnapshotListener((value, error) -> {
@@ -42,7 +49,10 @@ public class GroupProfileRepo {
         });
     }
 
-
+    /**
+     * FORMÅL: returnerer den arrayliste, som populeres i startListener() metoden.
+     * BRUG: i onCreate() metoden i CurrentGroupLeaderboardActivity klassen.
+     */
     public List<GroupProfile> myGroupsProfiles() {
         return groupProfilesList;
     }

@@ -12,6 +12,10 @@ import java.time.format.DateTimeFormatter;
 public class MatchService {
     private GroupRepo groupRepo = new GroupRepo();
 
+    /**
+     * FORMÅL: returnerer tidspunktet den kaldes i et ønsket format.
+     * BRUG: i declareMatchResult() metoden i MatchRepo klassen.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String fetchDateTimeForMatch() {
         LocalDateTime currentDate = LocalDateTime.now();
@@ -19,6 +23,10 @@ public class MatchService {
         return currentDate.format(formatForDate);
     }
 
+    /**
+     * FORMÅL: Udregner sandsynligheden for at en spiller vinder baseret på deres nuværende ELO-rating.
+     * BRUG: i EloRating() metoden og implementeret fra: https://www.geeksforgeeks.org/elo-rating-algorithm/
+     */
     // Function to calculate the Probability
     public float Probability(float rating1, float rating2) {
         return 1.0f * 1.0f / (1 + 1.0f *
@@ -26,6 +34,11 @@ public class MatchService {
                         (rating1 - rating2) / 400)));
     }
 
+    /**
+     * FORMÅL: udregner ny ELO-rating baseret på hvem der vandt kampen.
+     * BRUG: i declareMatchResult() metoden i MatchRepo klassen.
+     * Gør brug af updateNewElo() metoden, men er implementeret fra: https://www.geeksforgeeks.org/elo-rating-algorithm/
+     */
     // Function to calculate Elo rating
     // K is a constant.
     // d determines whether Player A wins
